@@ -20,6 +20,7 @@ before_install:
     - chmod +x bootstrap-vcpkg.sh
     - ./bootstrap-vcpkg.sh
     - chmod +x vcpkg
+    - ./vcpkg integrate install
     - ./vcpkg install glfw3
     - ./vcpkg install glad
     - ./vcpkg install glm
