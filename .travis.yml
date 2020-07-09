@@ -28,4 +28,5 @@ before_install:
 script:
   - mkdir build
   - cd build
-  - cmake -DCMAKE_TOOLCHAIN_FILE=/home/travis/build/mgerhold/Chip8Emulator/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_C_COMPILER=/usr/bin/gcc-8 -DCMAKE_CXX_COMPILER=/usr/bin/g++-8 ..
+  - cmake -DCMAKE_TOOLCHAIN_FILE=/home/travis/build/mgerhold/Chip8Emulator/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_C_COMPILER=/usr/bin/gcc-8 ..
+  - make
