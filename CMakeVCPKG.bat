@@ -1,0 +1,2 @@
+@IF NOT DEFINED VCPKG_ROOT ( @ECHO Please specify VCPKG_ROOT environment variable (example: C:\vcpkg^) && EXIT /B)
+@echo off && (CD build 2>NUL || (MKDIR build && CD build)) && cmake -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -A x64 .. & cd ..
