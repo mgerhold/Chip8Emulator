@@ -9,9 +9,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-8
-      - glfw3-dev
-      - glad-dev
-      - glm-dev
+      - vcpkg
       - cmake      
 compiler:
   - g++-8
