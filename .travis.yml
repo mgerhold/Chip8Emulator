@@ -1,19 +1,21 @@
+sudo: required
 language: cpp
-
+os:
+  - linux
+dist: bionic
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-8
+      - glfw3
+      - glad
+      - glm
+      - cmake      
 compiler:
-  - gcc
-
-before_script:
-  # create a build folder for the out-of-source build
-  - mkdir build
-  # switch to build directory
-  - cd build
-  # run cmake; here we assume that the project's
-  # top-level CMakeLists.txt is located at '..'
-  - cmake ..
-
+  - g++-8
 script:
-  # once CMake has done its job we just build using make as usual
-  - make
-  # if the project uses ctest we can run the tests like this
-  # - make test
+  - mkdir build
+  - cd build
+  - cmake -DCMAKE_C_COMPILER=/usr/bin/gcc-8 -DCMAKE_CXX_COMPILER=/usr/bin/g++-8 ..
