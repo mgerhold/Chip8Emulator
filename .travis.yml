@@ -9,10 +9,20 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-8
-      - vcpkg
+      - git
       - cmake      
 compiler:
   - g++-8
+before_install:
+    - git clone https://github.com/Microsoft/vcpkg.git vcpkg
+    - cd vcpkg
+    - chmod +x bootstrap-vcpkg.sh
+    - ./bootstrap-vcpkg.sh
+    - chmod +x vcpkg
+    - ./vcpkg install glfw3
+    - ./vcpkg install glad
+    - ./vcpkg install glm
+    - cd ..
 script:
   - mkdir build
   - cd build
