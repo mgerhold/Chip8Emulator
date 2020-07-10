@@ -1,0 +1,1 @@
+[![Build Status](https://travis-ci.com/mgerhold/Chip8Emulator.svg?branch=master)](https://travis-ci.com/mgerhold/Chip8Emulator)

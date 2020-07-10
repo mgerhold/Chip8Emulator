@@ -42,7 +42,7 @@ script:
   - doxygen Doxyfile
   
 deploy:
-  provider: pages
+  provider: pages # defaults to branch "gh-pages", can otherwise be set with "target_branch: <name_of_branch>"
   skip_cleanup: true
   local_dir: docs/html
   github_token: $GH_REPO_TOKEN
