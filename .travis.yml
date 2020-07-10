@@ -24,9 +24,11 @@ before_install:
     - ./vcpkg install glfw3
     - ./vcpkg install glad
     - ./vcpkg install glm
+    - ./vcpkg install gtest
     - cd ..
 script:
   - mkdir build
   - cd build
   - cmake -DCMAKE_TOOLCHAIN_FILE=/home/travis/build/mgerhold/Chip8Emulator/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_C_COMPILER=/usr/bin/gcc-8 ..
   - make
+  - ctest

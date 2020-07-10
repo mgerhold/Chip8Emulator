@@ -42,6 +42,10 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT C
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
+find_package(GTest CONFIG REQUIRED)
 
 target_link_libraries(Chip8Emulator Chip8Core Chip8Renderer)
 target_link_libraries(Chip8Renderer PRIVATE glfw PRIVATE glad::glad PRIVATE glm)
+
+enable_testing()
+add_subdirectory(test)
