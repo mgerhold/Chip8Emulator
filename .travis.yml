@@ -38,6 +38,7 @@ script:
   - cmake -DCMAKE_TOOLCHAIN_FILE=/home/travis/build/mgerhold/Chip8Emulator/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_C_COMPILER=/usr/bin/gcc-8 ..
   - make
   - ctest
+  - cd ..
   - doxygen Doxyfile
   
 deploy:
