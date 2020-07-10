@@ -1,5 +1,10 @@
 sudo: required
 language: cpp
+
+branches:
+    only:
+        - master
+
 os:
   - linux
 dist: bionic
@@ -10,7 +15,8 @@ addons:
     packages:
       - g++-8
       - git
-      - cmake      
+      - cmake
+      - doxygen
 compiler:
   - g++-8
 before_install:
@@ -32,3 +38,12 @@ script:
   - cmake -DCMAKE_TOOLCHAIN_FILE=/home/travis/build/mgerhold/Chip8Emulator/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_C_COMPILER=/usr/bin/gcc-8 ..
   - make
   - ctest
+  - doxygen Doxyfile
+  
+deploy:
+  provider: pages
+  skip_cleanup: true
+  local_dir: docs/html
+  github_token: $GH_REPO_TOKEN
+  on:
+    branch: master
