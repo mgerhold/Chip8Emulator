@@ -28,9 +28,20 @@ file(GLOB Chip8Emulator_SRC
 add_library(Chip8Core STATIC ${Chip8Core_SRC})
 add_library(Chip8Renderer STATIC ${Chip8Renderer_SRC})
 add_executable(Chip8Emulator ${Chip8Emulator_SRC})
+# C++17
 target_compile_features(Chip8Core PUBLIC cxx_std_17)
 target_compile_features(Chip8Renderer PUBLIC cxx_std_17)
 target_compile_features(Chip8Emulator PUBLIC cxx_std_17)
+# Enable Code Analysis
+set_target_properties(Chip8Core PROPERTIES VS_GLOBAL_EnableCppCoreCheck "true")
+set_target_properties(Chip8Core PROPERTIES VS_GLOBAL_CodeAnalysisRuleSet "CppCoreCheckRules.ruleset")
+set_target_properties(Chip8Core PROPERTIES VS_GLOBAL_RunCodeAnalysis "true")
+set_target_properties(Chip8Renderer PROPERTIES VS_GLOBAL_EnableCppCoreCheck "true")
+set_target_properties(Chip8Renderer PROPERTIES VS_GLOBAL_CodeAnalysisRuleSet "CppCoreCheckRules.ruleset")
+set_target_properties(Chip8Renderer PROPERTIES VS_GLOBAL_RunCodeAnalysis "true")
+set_target_properties(Chip8Emulator PROPERTIES VS_GLOBAL_EnableCppCoreCheck "true")
+set_target_properties(Chip8Emulator PROPERTIES VS_GLOBAL_CodeAnalysisRuleSet "CppCoreCheckRules.ruleset")
+set_target_properties(Chip8Emulator PROPERTIES VS_GLOBAL_RunCodeAnalysis "true")
 
 target_include_directories(Chip8Core PUBLIC ${PROJECT_SOURCE_DIR}/include)
 target_include_directories(Chip8Renderer PUBLIC ${PROJECT_SOURCE_DIR}/include)

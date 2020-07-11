@@ -4,14 +4,14 @@
 
 #include <Chip8Renderer/Chip8Renderer.hpp>
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window);
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) noexcept;
+void processInput(GLFWwindow* window) noexcept;
 
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+constexpr unsigned int SCR_WIDTH = 800;
+constexpr unsigned int SCR_HEIGHT = 600;
 
-Chip8Renderer::Chip8Renderer() {}
+Chip8Renderer::Chip8Renderer() noexcept {}
 
 bool Chip8Renderer::createWindow() {
     // glfw: initialize and configure
@@ -27,8 +27,8 @@ bool Chip8Renderer::createWindow() {
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    if (window == NULL) {
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", nullptr, nullptr);
+    if (window == nullptr) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return false;
@@ -67,14 +67,14 @@ bool Chip8Renderer::createWindow() {
     return true;
 }
 
-void processInput(GLFWwindow* window) {
+void processInput(GLFWwindow* window) noexcept {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) noexcept {
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
