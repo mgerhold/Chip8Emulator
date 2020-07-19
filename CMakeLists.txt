@@ -9,8 +9,12 @@ set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_RELEASE} /MT")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 
 set(Chip8Core_SRC
-	"include/Chip8Core/Chip8Core.hpp"
-	"src/Chip8Core/Chip8Core.cpp"
+	"include/Chip8Core/Chip8.hpp"
+	"include/Chip8Core/Chip8Memory.hpp"
+	"include/Chip8Core/Chip8Opcode.hpp"
+	"src/Chip8Core/Chip8.cpp"
+	"src/Chip8Core/Chip8Memory.cpp"
+	"src/Chip8Core/Chip8Opcode.cpp"
 )
 
 set(Chip8Renderer_SRC
