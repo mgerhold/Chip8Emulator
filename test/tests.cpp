@@ -33,7 +33,7 @@ TEST(Chip8MemoryTests, ReadBackWrittenValue) {
 	std::uniform_int_distribution<int> distribution(0x00, 0xFF /* = 0x1000 - 0x0001 */);
 	for (size_t i = 0x0; i < 0x1000; i++) {
 		auto randomValue = distribution(generator);
-		c8m.write(i, std::byte{ randomValue });
+		c8m.write(i, std::byte{ static_cast<unsigned char>(randomValue) });
 		ASSERT_EQ(randomValue, static_cast<unsigned char>(c8m.read(i)));
 	}
 }

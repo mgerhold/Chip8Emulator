@@ -4,6 +4,7 @@
 #include <optional>
 #include <variant>
 #include <cstdint>
+#include <cstddef>
 
 /*enum class OpcodeParameters {
 	None,
