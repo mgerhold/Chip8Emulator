@@ -3,15 +3,20 @@
 
 #include <Chip8Core/Chip8.hpp>
 #include <Chip8Renderer/Chip8Renderer.hpp>
-#include <Chip8Core/Chip8Opcode.hpp>
+#include <Chip8Core/Opcodes.hpp>
 
 int main() {
-	auto opcode = Chip8Opcode("DXYN");
-	opcode.setValue(OpcodeValue(0xDABC));
-	const auto x = opcode.getX().value();
-	const auto y = opcode.getY().value();
-	const auto n = opcode.getN().value();
-	std::cout << "0x" << std::uppercase << std::hex << static_cast<int>(x) << ", 0x" << static_cast<int>(y) << ", 0x" << static_cast<int>(n) << "\n";
+	Chip8::Chip8 chip8;
+	if (!chip8.loadROM("roms/programs/Life [GV Samways, 1980].ch8"))
+		std::cout << "Could not open file!\n";
+	else
+		chip8.getMemory().dump();
+
+	for (auto& [name, opcode, opcodeMask, parameterMask] : Chip8::Opcodes) {		
+		std::cout << name << ", 0x" << std::setfill('0') << std::setw(4) << std::hex << opcode << ", 0x" << std::setw(4) << opcodeMask << ", 0x" << std::setw(4) << parameterMask << "\n";
+	}
+
+	while (chip8.step());
 
 	std::cin.get();
 }

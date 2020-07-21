@@ -10,11 +10,13 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 
 set(Chip8Core_SRC
 	"include/Chip8Core/Chip8.hpp"
-	"include/Chip8Core/Chip8Memory.hpp"
-	"include/Chip8Core/Chip8Opcode.hpp"
+	"include/Chip8Core/Instruction.hpp"
+	"include/Chip8Core/Memory.hpp"
+	"include/Chip8Core/OpcodeHandler.hpp"
+	"include/Chip8Core/Opcodes.hpp"
 	"src/Chip8Core/Chip8.cpp"
-	"src/Chip8Core/Chip8Memory.cpp"
-	"src/Chip8Core/Chip8Opcode.cpp"
+	"src/Chip8Core/Instruction.cpp"
+	"src/Chip8Core/OpcodeHandler.cpp"
 )
 
 set(Chip8Renderer_SRC
@@ -58,6 +60,8 @@ else()
 	target_compile_options(Chip8Core PUBLIC -Wall -Wextra -pedantic -Werror)
 	target_compile_options(Chip8Renderer PUBLIC -Wall -Wextra -pedantic -Werror)
 	target_compile_options(Chip8Emulator PUBLIC -Wall -Wextra -pedantic -Werror)
+	#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lstdc++fs")
+	target_link_libraries(Chip8Core PRIVATE stdc++fs)
 endif()
 
 # C++17
@@ -95,6 +99,8 @@ target_include_directories(Chip8Emulator PUBLIC
 
 # Visual Studio startup project
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Chip8Emulator)
+# Visual Studio working directory
+set_property(TARGET Chip8Emulator PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
 
 # external libraries
 find_package(glfw3 CONFIG REQUIRED)
