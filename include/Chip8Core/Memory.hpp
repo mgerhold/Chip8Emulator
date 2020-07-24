@@ -9,7 +9,7 @@
 template <typename UnderlyingType>
 class Chip8Memory {
 public:
-	void write(size_t address, UnderlyingType value);
+	void write(uint16_t address, UnderlyingType value);
 	UnderlyingType read(uint16_t address) const;
 	void clear();
 	UnderlyingType* data() noexcept;
@@ -20,7 +20,7 @@ private:
 };
 
 template <typename UnderlyingType>
-inline void Chip8Memory<UnderlyingType>::write(size_t address, UnderlyingType value) {
+inline void Chip8Memory<UnderlyingType>::write(uint16_t address, UnderlyingType value) {
 	mMemory.at(address) = value;
 }
 

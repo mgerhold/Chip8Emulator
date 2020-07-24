@@ -15,14 +15,14 @@ namespace Chip8 {
 		Chip8() noexcept;
 		bool loadROM(const std::string& filename);
 		bool step();
-		Chip8Memory<char>& getMemory() noexcept;
-		const Chip8Memory<char>& getMemory() const noexcept;
+		Chip8Memory<uint8_t>& getMemory() noexcept;
+		const Chip8Memory<uint8_t>& getMemory() const noexcept;
 
 	private:
 		std::array<uint8_t, 16> mV; ///< registers V0 to VF
 		uint16_t mI; ///< 16 bit memory address register I
 		uint16_t mPC; ///< program counter
-		Chip8Memory<char> mMemory;
+		Chip8Memory<uint8_t> mMemory;
 	};
 
 }

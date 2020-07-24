@@ -25,16 +25,16 @@ namespace Chip8 {
         if (!fs::exists(filename)) {
             return false;
         } else {
-            std::ifstream file;
+            std::basic_ifstream<uint8_t> file;
             file.open(filename, std::ios::in | std::ios::binary);
             if (file.good()) {
-    #ifdef _MSC_VER
-    #pragma warning(disable: 26481)
-    #endif
-                file.read(mMemory.data() + 0x0200, 0x1000 - 0x200);
-    #ifdef _MSC_VER
-    #pragma warning(default: 26481)
-    #endif
+#ifdef _MSC_VER
+#pragma warning(disable: 26481)
+#endif
+                file.read(mMemory.data() + 0x0200, 0x1000 - 0x0200);
+#ifdef _MSC_VER
+#pragma warning(default: 26481)
+#endif
             } else {
                 return false;
             }
@@ -50,19 +50,25 @@ namespace Chip8 {
             mPC += 2;
 
             // evaluate instruction
+            bool instructionFound = false;
 #ifndef _MSC_VER
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
-            for (auto& [name , opcode, opcodeMask, parameterMask] : Opcodes) {
+            for (auto& [name, opcode, opcodeMask, parameterMask] : Opcodes) {
 #ifndef _MSC_VER
 #pragma GCC diagnostic pop
 #endif
                 if ((instruction.getValue() & opcodeMask) == opcode) {
+                    instructionFound = true;
                     if (!OpcodeHandler::execute(opcode, instruction, *this))
                         return false;
                 }
             }
+            if (!instructionFound)
+                std::cout << "Warning: Instruction 0x"
+                    << std::setw(4) << std::setfill('0') << std::hex << std::uppercase
+                    << instruction.getValue() << " could not be evaluated (unknown opcode).\n";
             return true;
         } else {
             std::cout << "end of program reached\n";
@@ -70,11 +76,11 @@ namespace Chip8 {
         }
     }
 
-    Chip8Memory<char>& Chip8::getMemory() noexcept {
+    Chip8Memory<uint8_t>& Chip8::getMemory() noexcept {
         return mMemory;
     }
 
-    const Chip8Memory<char>& Chip8::getMemory() const noexcept {
+    const Chip8Memory<uint8_t>& Chip8::getMemory() const noexcept {
         return mMemory;
     }
 }
