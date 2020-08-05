@@ -9,6 +9,8 @@ namespace fs = std::experimental::filesystem;
 #endif
 #include <iostream>
 #include <fstream>
+#include <cassert>
+
 #include <gsl/gsl>
 
 #include "Chip8Core/Instruction.hpp"
@@ -18,7 +20,7 @@ namespace fs = std::experimental::filesystem;
 namespace Chip8 {
 
     Chip8::Chip8() noexcept 
-        : mV({}), mI(0), mPC(0x200)
+        : mV({}), mI(0), mPC(ProgramOffset)
     {}
 
     bool Chip8::loadROM(const std::string& filename) {
@@ -76,12 +78,18 @@ namespace Chip8 {
         }
     }
 
-    Chip8Memory<uint8_t>& Chip8::getMemory() noexcept {
+    Chip8Memory<Chip8::MemoryUnderlyingType>& Chip8::getMemory() noexcept {
         return mMemory;
     }
 
-    const Chip8Memory<uint8_t>& Chip8::getMemory() const noexcept {
+    const Chip8Memory<Chip8::MemoryUnderlyingType>& Chip8::getMemory() const noexcept {
         return mMemory;
+    }
+    uint8_t Chip8::getRegister(uint8_t registerNumber) const noexcept  {        
+        return mV.at(registerNumber);
+    }
+    void Chip8::setRegister(uint8_t registerNumber, uint8_t value) noexcept {
+        mV.at(registerNumber) = value;
     }
 }
 

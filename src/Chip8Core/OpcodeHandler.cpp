@@ -8,11 +8,13 @@
 
 namespace Chip8 {
 
-	bool OpcodeHandler::execute(uint16_t opcode, const Instruction& instruction, Chip8& /*chip8*/) {
+	bool OpcodeHandler::execute(uint16_t opcode, const Instruction& instruction, Chip8& chip8) {
 		std::cout << "executing " << std::setw(4) << std::setfill('0') << std::hex << instruction.getValue() << "\n\t";
 		switch (opcode) {
 			case 0x0000: // 0NNN
 				std::cout << "0NNN with NNN = " << instruction.getNNN() << "\n";
+				// Calls machine code routine (RCA 1802 for COSMAC VIP) at address NNN. Not necessary for most ROMs.
+				// TODO: log that this opcode is purposely not implemented
 				break;
 			case 0x00E0: // 00E0
 				std::cout << "00E0\n";
@@ -37,6 +39,8 @@ namespace Chip8 {
 				break;
 			case 0x6000: // 6XNN
 				std::cout << "6XNN with X = " << +instruction.getX() << " and NN = " << +instruction.getNN() << "\n";
+				// Sets VX to NN.
+				chip8.setRegister(instruction.getX(), instruction.getNN());
 				break;
 			case 0x7000: // 7XNN
 				std::cout << "7XNN with X = " << +instruction.getX() << " and NN = " << +instruction.getNN() << "\n";

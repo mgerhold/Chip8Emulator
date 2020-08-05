@@ -12,11 +12,17 @@ namespace Chip8 {
 
 	class Chip8 {
 	public:
+		constexpr static uint16_t ProgramOffset = 0x0200; // this is where execution starts
+		using MemoryUnderlyingType = uint8_t;
+
+	public:
 		Chip8() noexcept;
 		bool loadROM(const std::string& filename);
 		bool step();
-		Chip8Memory<uint8_t>& getMemory() noexcept;
-		const Chip8Memory<uint8_t>& getMemory() const noexcept;
+		Chip8Memory<MemoryUnderlyingType>& getMemory() noexcept;
+		const Chip8Memory<MemoryUnderlyingType>& getMemory() const noexcept;
+		uint8_t getRegister(uint8_t registerNumber) const noexcept;
+		void setRegister(uint8_t registerNumber, uint8_t value) noexcept;
 
 	private:
 		std::array<uint8_t, 16> mV; ///< registers V0 to VF
