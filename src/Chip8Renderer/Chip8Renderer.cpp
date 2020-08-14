@@ -211,7 +211,7 @@ void Chip8Renderer::renderImGui() {
     }
 
     ImGui::Separator();
-    ImGui::Text(mMessage.c_str());
+    ImGui::Text("%s", mMessage.c_str());
 
     ImGui::End();
 
