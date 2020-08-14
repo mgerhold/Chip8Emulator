@@ -1,4 +1,4 @@
-#include "..\..\include\Chip8Renderer\Clock.hpp"
+#include "Chip8Renderer/Clock.hpp"
 
 Clock::Clock() noexcept {
 	restart();
