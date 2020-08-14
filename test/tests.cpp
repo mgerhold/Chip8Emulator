@@ -354,16 +354,16 @@ namespace {
 		chip8.setRegister(0xA, 0x24);
 		writeInstruction(0xFA15); // set delay timer to VA (0x24)
 		writeInstruction(0xFB07); // load value of delay timer into VB
-		chip8.step(); // also decreases delay timer
-		chip8.step(); // also decreases delay timer
-		ASSERT_EQ(chip8.getDelayTimer(), 0x24 - 2);
+		chip8.step();
+		chip8.step();
+		ASSERT_EQ(chip8.getDelayTimer(), 0x24);
 	}
 
 	TEST_F(OpcodeTest, SetDelayTimer) { // 0xFX15
 		chip8.setRegister(0xA, 0x025);
 		writeInstruction(0xFA15); // set delay timer to VA (0x025)
 		chip8.step();
-		ASSERT_EQ(chip8.getDelayTimer(), 0x24);
+		ASSERT_EQ(chip8.getDelayTimer(), 0x25);
 	}
 
 	TEST_F(OpcodeTest, AddRegisterToAddressPointer) { // 0xFX1E
