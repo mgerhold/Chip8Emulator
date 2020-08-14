@@ -76,6 +76,7 @@ namespace {
 	}
 
 	TEST_F(ProgramCounterTest, ProgramCounterIncreasesCorrectlyUponStep) {
+		chip8.getMemory().write(chip8.ProgramOffset, 0x00E0); // instruction is needed for the program counter to increase
 		chip8.step();
 		ASSERT_EQ(chip8.getProgramCounter(), chip8.ProgramOffset + 0x2);
 	}

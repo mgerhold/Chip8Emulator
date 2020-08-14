@@ -86,6 +86,7 @@ void Chip8Renderer::startRenderLoop() {
         if (mStepping) {
             mChip8.step();
             mChip8.clockTimers();
+            mStepping = false;
         }
 
         while (mRunning && (mUpdateClock.getElapsedTime() - mLastUpdateClockTime >= 1.f / mUpdatesPerSecond)) {
@@ -104,10 +105,8 @@ void Chip8Renderer::startRenderLoop() {
             glfwSwapBuffers(mWindow);
             mLastTimerClockTime = mTimerClock.getElapsedTime();
         }
-        if (mStepping)
-            mChip8.clockTimers();
-
-        mStepping = false;     
+        /*if (mStepping)
+            mChip8.clockTimers();*/
     }
 }
 
@@ -213,13 +212,11 @@ void Chip8Renderer::renderImGui() {
     ImGui::PopItemWidth();
 
     if (ImGui::Button("Step") && !mRunning) {
-        if (instruction.getValue() != 0x0000) {
-            mStepping = true;            
-            //mLastInstruction = instruction;
+        if (mChip8.getNextInstruction().getValue() != 0x0000) {
+            mStepping = true;
         }
     }
     ImGui::SameLine();
-
 
     if (mRunning) {
         if (ImGui::Button("Pause")) {
@@ -230,6 +227,8 @@ void Chip8Renderer::renderImGui() {
             mRunning = true;
             mLastTimerClockTime = 0.f;
             mTimerClock.restart();
+            mLastUpdateClockTime = 0.f;
+            mUpdateClock.restart();
         }
     }
 

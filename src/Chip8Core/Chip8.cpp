@@ -42,14 +42,21 @@ namespace Chip8 {
         if (!fs::exists(filename)) {
             return false;
         } else {
-            std::basic_ifstream<uint8_t> file;
+            std::ifstream file;
+            file.exceptions(std::ifstream::failbit | std::ifstream::badbit | std::ifstream::eofbit);
             file.open(filename, std::ios::in | std::ios::binary);
             if (file.good()) {
                 reset();
 #ifdef _MSC_VER
 #pragma warning(disable: 26481)
 #endif
-                file.read(mMemory.data() + 0x0200, 0x1000 - 0x0200);
+                uintmax_t bytesToRead = std::min(static_cast<uintmax_t>(0x1000 - 0x0200), fs::file_size(filename));
+                try {
+                    file.read((char*)mMemory.data() + 0x0200, bytesToRead);
+                } catch (const std::ifstream::failure& e) {
+                    std::cout << "Error reading file: " << e.what() << std::endl;
+                    return false;
+                }
 #ifdef _MSC_VER
 #pragma warning(default: 26481)
 #endif
@@ -65,6 +72,8 @@ namespace Chip8 {
         if (mPC < 0x1000) {
             // read next instruction and increase program counter
             const Instruction instruction(mMemory.read(mPC), mMemory.read(mPC + 1));
+            if (instruction.getValue() == 0x0000)
+                return false;
             mPC += 2;
 
             // evaluate instruction
@@ -150,7 +159,13 @@ namespace Chip8 {
     }
 
     Instruction Chip8::getNextInstruction() const {
-        return Instruction(mMemory.read(mPC), mMemory.read(mPC + 1));
+        Instruction result(0x0000);
+        try {
+            result = Instruction(mMemory.read(mPC), mMemory.read(mPC + 1));
+        } catch (const std::exception& e) {
+            std::cout << "Error reading memory: " << e.what() << "\n";
+        }
+        return result;
     }
 
     void Chip8::setPixel(size_t x, size_t y, bool isSet) {

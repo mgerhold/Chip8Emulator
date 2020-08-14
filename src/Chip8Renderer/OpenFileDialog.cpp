@@ -12,7 +12,12 @@ namespace fs = std::experimental::filesystem;
 
 std::optional<std::string> OpenFileDialog::open() {
 	nfdchar_t* outPath = nullptr;
+#ifdef _MSC_VER
 	const nfdresult_t result = NFD_OpenDialog(nullptr, getCurrentDirectory().c_str(), &outPath);
+#else
+	// on linux it doesn't seem to work to set a starting directory
+	const nfdresult_t result = NFD_OpenDialog(nullptr, nullptr, &outPath);
+#endif
 
 	if (result == NFD_OKAY) {
 		const std::string path = outPath;
