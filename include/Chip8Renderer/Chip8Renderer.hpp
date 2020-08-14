@@ -14,18 +14,25 @@ public:
 	void startRenderLoop();
 
 private:
+	void renderDisplay() const;
 	void renderImGui();
 	void centerWindow(GLFWwindow* window, GLFWmonitor* monitor);
+	void drawUnitQuad() const;
 
 private:
 	GLFWwindow* mWindow;
 	Chip8::Chip8& mChip8;
-	Clock mClock;
-	float mPixelSize;
+	Clock mTimerClock;
+	Clock mUpdateClock;
+	float mScaleFactor;
 	float mPixelColor[3];
 	float mBackgroundColor[3];
+	float mClearColor[3];
 	bool mRunning;
+	bool mStepping;
 	std::string mMessage;
 	Chip8::Instruction mLastInstruction;
-	float mLastElapsedTime;
+	float mLastTimerClockTime;
+	float mLastUpdateClockTime;
+	int mUpdatesPerSecond;
 };

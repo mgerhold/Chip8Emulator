@@ -1,18 +1,22 @@
 #include "Chip8Renderer/Chip8Renderer.hpp"
+
 #include <iostream>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <gsl/gsl>
+
 #ifdef _MSC_VER
-    // suppress warnings for ImGui headers
-    #pragma warning( push , 0 )
-    #pragma warning( disable : 26477 26455 26440 26493 26477 26432 26447 26481 26496 26485 26495 )
-    #pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+// suppress warnings for ImGui headers
+#pragma warning( push , 0 )
+#pragma warning( disable : 26477 26455 26440 26493 26477 26432 26447 26481 26496 26485 26495 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
 #endif
 #include <imgui.h>
 #include <examples/imgui_impl_glfw.h>
 #include <examples/imgui_impl_opengl3.h>
 #ifdef _MSC_VER
-    #pragma warning( pop )
+#pragma warning( pop )
 #endif
 #include "Chip8Renderer/OpenFileDialog.hpp"
 
@@ -25,52 +29,37 @@ constexpr unsigned int SCR_WIDTH = 1440;
 constexpr unsigned int SCR_HEIGHT = 810;
 
 Chip8Renderer::Chip8Renderer(Chip8::Chip8& chip8) noexcept
-    : mWindow(nullptr), mChip8(chip8), mPixelSize(4.f), mPixelColor{1.0f, 1.0f, 1.0f}
-    , mBackgroundColor{}, mRunning(false), mLastInstruction(0x0000)
+    : mWindow(nullptr), mChip8(chip8), mScaleFactor(0.03f), mPixelColor{1.0f, 1.0f, 1.0f}
+    , mBackgroundColor{0.26f, 0.26f, 0.26f}, mClearColor{}, mRunning(false), mStepping(false)
+    , mLastInstruction(0x0000), mUpdatesPerSecond(480)
 {
-    mLastElapsedTime = mClock.restart();
+    mLastTimerClockTime = mTimerClock.restart();
+    mLastUpdateClockTime = mUpdateClock.restart();
 }
 
 void Chip8Renderer::free() {
-    // Cleanup ImGui
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    // glfw: terminate, clearing all previously allocated GLFW resources.
-    // ------------------------------------------------------------------
     glfwDestroyWindow(mWindow);
     glfwTerminate();
 }
 
 bool Chip8Renderer::createWindow() {
-    // glfw: initialize and configure
-    // ------------------------------    
     glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-
-    // glfw window creation
-    // --------------------
     mWindow = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Chip8 Emulator", nullptr, nullptr);
     if (mWindow == nullptr) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return false;
     }
-    // center window on primary monitor
     centerWindow(mWindow, glfwGetPrimaryMonitor());
 
     glfwMakeContextCurrent(mWindow);
     glfwSetFramebufferSizeCallback(mWindow, framebuffer_size_callback);
 
-    // glad: load all OpenGL function pointers
-    // ---------------------------------------
+    // glad
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return false;
@@ -89,19 +78,66 @@ bool Chip8Renderer::createWindow() {
 }
 
 void Chip8Renderer::startRenderLoop() {
+    constexpr float frameInterval = 1.f / 60.f;
     while (!glfwWindowShouldClose(mWindow)) {
-        // input
         glfwPollEvents();
         processInput(mWindow);
 
-        // render
-        glClearColor(mBackgroundColor[0], mBackgroundColor[1], mBackgroundColor[2], 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        if (mStepping) {
+            mChip8.step();
+            mChip8.clockTimers();
+        }
 
-        renderImGui();
+        while (mRunning && (mUpdateClock.getElapsedTime() - mLastUpdateClockTime >= 1.f / mUpdatesPerSecond)) {
+            mChip8.step();
+            mLastUpdateClockTime += 1.f / mUpdatesPerSecond;
+        }
 
-        // swap
-        glfwSwapBuffers(mWindow);
+        if (mTimerClock.getElapsedTime() - mLastTimerClockTime >= frameInterval) {
+            // clock timers
+            if (mRunning) {
+                mChip8.clockTimers();
+            }
+            // render
+            renderDisplay();
+            renderImGui();
+            glfwSwapBuffers(mWindow);
+            mLastTimerClockTime = mTimerClock.getElapsedTime();
+        }
+        if (mStepping)
+            mChip8.clockTimers();
+
+        mStepping = false;     
+    }
+}
+
+void Chip8Renderer::renderDisplay() const {
+    float ratio;
+    int width, height;
+    glfwGetFramebufferSize(mWindow, &width, &height);
+    ratio = width / (float)height;
+
+    glClearColor(mClearColor[0], mClearColor[1], mClearColor[2], 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glScalef(mScaleFactor, mScaleFactor, mScaleFactor);
+    glTranslatef(-static_cast<float>(mChip8.DisplayWidth / 2) + 0.5f, static_cast<float>(mChip8.DisplayHeight / 2) - 0.5f, 0.f);
+    for (size_t y = 0; y < mChip8.DisplayHeight; ++y) {
+        for (size_t x = 0; x < mChip8.DisplayWidth; ++x) {
+            if (mChip8.getPixel(x ,y))
+                glColor3f(mPixelColor[0], mPixelColor[1], mPixelColor[2]);
+            else
+                glColor3f(mBackgroundColor[0], mBackgroundColor[1], mBackgroundColor[2]);
+            glPushMatrix();
+            glTranslatef(static_cast<float>(x), -static_cast<float>(y), 0.0f);
+            drawUnitQuad();
+            glPopMatrix();
+        }
     }
 }
 
@@ -135,7 +171,8 @@ void Chip8Renderer::renderImGui() {
     ImGui::PushItemWidth(170);
     ImGui::ColorEdit3("pixel color", mPixelColor);
     ImGui::ColorEdit3("background color", mBackgroundColor);
-    ImGui::SliderFloat("pixel size", &mPixelSize, 1.f, 30.f);
+    ImGui::ColorEdit3("clear color", mClearColor);
+    ImGui::SliderFloat("scale factor", &mScaleFactor, 0.01f, 0.1f);
     ImGui::PopItemWidth();
 
     ImGui::Separator();
@@ -161,8 +198,9 @@ void Chip8Renderer::renderImGui() {
 
     ImGui::Separator();
 
-    int currentCompatibilityModeIndex = (mChip8.getCompatibilityMode() == Chip8::CompatibilityMode::OriginalChip8 ? 0 : 1);
     ImGui::PushItemWidth(170);
+    ImGui::SliderInt("updates per second", &mUpdatesPerSecond, 10, 10'000);
+    int currentCompatibilityModeIndex = (mChip8.getCompatibilityMode() == Chip8::CompatibilityMode::OriginalChip8 ? 0 : 1);
     if (ImGui::Combo("Compatibility Mode", &currentCompatibilityModeIndex, "Chip8\0SuperChip\0\0")) {
         if (currentCompatibilityModeIndex == 0) {
             mChip8.setCompatibilityMode(Chip8::CompatibilityMode::OriginalChip8);
@@ -176,30 +214,22 @@ void Chip8Renderer::renderImGui() {
 
     if (ImGui::Button("Step") && !mRunning) {
         if (instruction.getValue() != 0x0000) {
-            mChip8.step();
-            mLastInstruction = instruction;
+            mStepping = true;            
+            //mLastInstruction = instruction;
         }
     }
     ImGui::SameLine();
 
 
     if (mRunning) {
-        auto now = mClock.getElapsedTime();
-        float deltaTime = now - mLastElapsedTime;
-        while (deltaTime >= 1.f / 60.f) {
-            mLastInstruction = mChip8.getNextInstruction();
-            mChip8.step();
-            deltaTime -= (1.f / 60.f);
-            mLastElapsedTime = now;
-        }
         if (ImGui::Button("Pause")) {
             mRunning = false;
         }
     } else {
         if (ImGui::Button("Run")) {
             mRunning = true;
-            mLastElapsedTime = 0.f;
-            mClock.restart();
+            mLastTimerClockTime = 0.f;
+            mTimerClock.restart();
         }
     }
 
@@ -211,6 +241,7 @@ void Chip8Renderer::renderImGui() {
     }
 
     ImGui::Separator();
+
     ImGui::Text("%s", mMessage.c_str());
 
     ImGui::End();
@@ -238,6 +269,17 @@ void Chip8Renderer::centerWindow(GLFWwindow* window, GLFWmonitor* monitor) {
     glfwSetWindowPos(window,
         monitorX + (mode->width - windowWidth) / 2,
         monitorY + (mode->height - windowHeight) / 2);
+}
+
+void Chip8Renderer::drawUnitQuad() const {
+    glBegin(GL_TRIANGLES);
+    glVertex3f(-0.5f,  0.5f, 0.0f);
+    glVertex3f(-0.5f, -0.5f, 0.0f);
+    glVertex3f( 0.5f, -0.5f, 0.0f);
+    glVertex3f( 0.5f, -0.5f, 0.0f);
+    glVertex3f( 0.5f,  0.5f, 0.0f);
+    glVertex3f(-0.5f,  0.5f, 0.0f);
+    glEnd();
 }
 
 void processInput(GLFWwindow* window) noexcept {

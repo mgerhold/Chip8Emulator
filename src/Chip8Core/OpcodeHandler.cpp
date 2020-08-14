@@ -21,11 +21,11 @@ namespace Chip8 {
 		switch (opcode) {
 			case 0x0000: // 0NNN
 				// Calls machine code routine (RCA 1802 for COSMAC VIP) at address NNN. Not necessary for most ROMs.
-				// TODO: log that this opcode is purposely not implemented
+				std::cout << "Info: Opcode 0NNN is purposely not implemented.\n";
 				break;
 			case 0x00E0: // 00E0
 				// Clears the screen.
-				// TODO: Remove comment!!! chip8.mDisplayMemory.reset();
+				chip8.mDisplayMemory.reset();
 				break;
 			case 0x00EE: // 00EE
 				// Returns from a subroutine.
@@ -160,12 +160,20 @@ namespace Chip8 {
 				chip8.setRegister(instruction.getX(), generateRandomNumber() & instruction.getNN());
 				break;
 			case 0xD000: // DXYN
-				// TODO: implementation
+				// Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels.
+				// Each row of 8 pixels is read as bit-coded starting from memory location I; I value doesn’t change
+				// after the execution of this instruction. As described above, VF is set to 1 if any screen pixels
+				// are flipped from set to unset when the sprite is drawn, and to 0 if that doesn’t happen
+				drawSprite(chip8.getRegister(instruction.getX()), chip8.getRegister(instruction.getY()), instruction.getN(), chip8);
 				break;
 			case 0xE09E: // EX9E
+				// Skips the next instruction if the key stored in VX is pressed. (Usually the next instruction
+				// is a jump to skip a code block)
 				// TODO: implementation
 				break;
 			case 0xE0A1: // EXA1
+				// Skips the next instruction if the key stored in VX isn't pressed. (Usually the next instruction
+				// is a jump to skip a code block)
 				// TODO: implementation
 				break;
 			case 0xF007: // FX07
@@ -173,6 +181,8 @@ namespace Chip8 {
 				chip8.setRegister(instruction.getX(), chip8.mDelayTimer);
 				break;
 			case 0xF00A: // FX0A
+				// A key press is awaited, and then stored in VX. (Blocking Operation. All instruction halted until
+				// next key event)
 				// TODO: implementation
 				break;
 			case 0xF015: // FX15
@@ -196,7 +206,9 @@ namespace Chip8 {
 				chip8.mI += chip8.getRegister(instruction.getX());
 				break;
 			case 0xF029: // FX29
-				// TODO: implementation
+				// Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal)
+				// are represented by a 4x5 font.
+				chip8.mI = (5u * chip8.getRegister(instruction.getX()));
 				break;
 			case 0xF033: // FX33
 				// Stores the binary-coded decimal representation of VX, with the most significant of three
@@ -251,6 +263,29 @@ namespace Chip8 {
 				return false;				
 		}
 		return true;
+	}
+
+	void OpcodeHandler::drawSprite(uint8_t x, uint8_t y, uint8_t height, Chip8& chip8) {
+		// Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels.
+		// Each row of 8 pixels is read as bit-coded starting from memory location I; I value doesn’t
+		// change after the execution of this instruction. As described above, VF is set to 1 if any
+		// screen pixels are flipped from set to unset when the sprite is drawn, and to 0 if that doesn’t happen
+		Ensures(height <= 0xF);
+		bool collision = false;
+		for (uint8_t row = 0x0; row < height; ++row) {
+			for (uint8_t col = 0x0; col < 0x8; ++col) {
+				bool oldPixel = chip8.getPixel(static_cast<size_t>(x) + col, static_cast<size_t>(y) + row);
+				uint16_t memoryPosition = chip8.getAddressPointer() + row;
+				uint8_t mask = (0x1 << (0x7 - col));
+				bool newPixel = ((chip8.getMemory().read(memoryPosition) & mask) != 0x0);
+				if (newPixel) {
+					if (oldPixel)
+						collision = true;
+					chip8.setPixel(static_cast<size_t>(x) + col, static_cast<size_t>(y) + row, !oldPixel);
+				}
+			}
+		}
+		chip8.setRegister(0xF, collision ? 0x1 : 0x0);
 	}
 
 	uint8_t OpcodeHandler::generateRandomNumber() noexcept {

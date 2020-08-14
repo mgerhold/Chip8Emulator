@@ -24,8 +24,11 @@ namespace Chip8 {
     {}
 
     void Chip8::reset(bool alsoResetMemory) noexcept {
-        if (alsoResetMemory)
+        if (alsoResetMemory) {
             mMemory.clear();
+            writeCharacterData();
+        }
+        mDisplayMemory.reset(); // clear display
         for (uint8_t i = 0; i <= 0xF; ++i)
             setRegister(i, 0x0);
         mPC = ProgramOffset;
@@ -77,11 +80,7 @@ namespace Chip8 {
                 if ((instruction.getValue() & opcodeMask) == opcode) {
                     instructionFound = true;
                     if (!OpcodeHandler::execute(opcode, instruction, *this, mCompatibilityMode))
-                        return false;
-                    if (mDelayTimer > 0x0)
-                        mDelayTimer--;
-                    if (mSoundTimer > 0x0)
-                        mSoundTimer--;
+                        return false;                    
                     break;
                 }
             }
@@ -94,6 +93,13 @@ namespace Chip8 {
             std::cout << "end of program reached\n";
             return false;
         }
+    }
+
+    void Chip8::clockTimers() noexcept {
+        if (mDelayTimer > 0x0)
+            mDelayTimer--;
+        if (mSoundTimer > 0x0)
+            mSoundTimer--;
     }
 
     Chip8Memory<Chip8::MemoryUnderlyingType>& Chip8::getMemory() noexcept {
@@ -148,10 +154,25 @@ namespace Chip8 {
     }
 
     void Chip8::setPixel(size_t x, size_t y, bool isSet) {
+        if (x >= DisplayWidth || y >= DisplayHeight) {
+            std::cout << "Error: Invalid pixel coordinate (" << x << ", " << y << ")\n";
+            return;
+        }
         mDisplayMemory[x + DisplayWidth * y] = isSet;
     }
+
     bool Chip8::getPixel(size_t x, size_t y) const {
+        if (x >= DisplayWidth || y >= DisplayHeight) {
+            std::cout << "Error: Invalid pixel coordinate (" << x << ", " << y << ")\n";
+            return false;
+        }
         return mDisplayMemory[x + DisplayWidth * y];
+    }
+
+    void Chip8::writeCharacterData() {
+        for (uint16_t address = 0; address < sizeof(Characters) / sizeof(Characters[0]); ++address) {
+            mMemory.write(address, Characters[static_cast<size_t>(address)]);
+        }
     }
 }
 

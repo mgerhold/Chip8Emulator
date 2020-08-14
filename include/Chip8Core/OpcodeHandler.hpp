@@ -21,6 +21,7 @@ namespace Chip8 {
 		static bool execute(uint16_t opcode, const Instruction& instruction, Chip8& chip8,
 			CompatibilityMode compatibilityMode = CompatibilityMode::SuperChip);
 	private:
+		static void drawSprite(uint8_t x, uint8_t y, uint8_t height, Chip8& chip8);
 		static uint8_t generateRandomNumber() noexcept;
 	};
 
