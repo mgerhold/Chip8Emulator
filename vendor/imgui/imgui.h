@@ -1633,6 +1633,11 @@ struct ImGuiInputTextCallbackData
 
 // Resizing callback data to apply custom constraint. As enabled by SetNextWindowSizeConstraints(). Callback is called during the next Begin().
 // NB: For basic min/max size constraint on each axis you don't need to use the callback! The SetNextWindowSizeConstraints() parameters are enough.
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26495 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
 struct ImGuiSizeCallbackData
 {
     void*   UserData;       // Read-only.   What user passed to SetNextWindowSizeConstraints()
@@ -1640,6 +1645,9 @@ struct ImGuiSizeCallbackData
     ImVec2  CurrentSize;    // Read-only.   Current window size.
     ImVec2  DesiredSize;    // Read-write.  Desired size, based on user's mouse position. Write to this field to restrain resizing.
 };
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
 // Data payload for Drag and Drop operations: AcceptDragDropPayload(), GetDragDropPayload()
 struct ImGuiPayload
@@ -1754,7 +1762,15 @@ struct ImGuiTextBuffer
     IMGUI_API static char EmptyString[1];
 
     ImGuiTextBuffer()   { }
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6011 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     inline char         operator[](int i) const { IM_ASSERT(Buf.Data != NULL); return Buf.Data[i]; }
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
     const char*         begin() const           { return Buf.Data ? &Buf.front() : EmptyString; }
     const char*         end() const             { return Buf.Data ? &Buf.back() : EmptyString; }   // Buf is zero-terminated, so end() will point on the zero-terminator
     int                 size() const            { return Buf.Size ? Buf.Size - 1 : 0; }
@@ -1778,6 +1794,11 @@ struct ImGuiTextBuffer
 struct ImGuiStorage
 {
     // [Internal]
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26495 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     struct ImGuiStoragePair
     {
         ImGuiID key;
@@ -1786,6 +1807,9 @@ struct ImGuiStorage
         ImGuiStoragePair(ImGuiID _key, float _val_f)    { key = _key; val_f = _val_f; }
         ImGuiStoragePair(ImGuiID _key, void* _val_p)    { key = _key; val_p = _val_p; }
     };
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
     ImVector<ImGuiStoragePair>      Data;
 

@@ -17,83 +17,69 @@ namespace Chip8 {
 	bool OpcodeHandler::execute(uint16_t opcode, const Instruction& instruction, Chip8& chip8, CompatibilityMode compatibilityMode) {
 		// important note: the program counter will already be incremented upon entering this function!
 
-		std::cout << "executing " << std::setw(4) << std::setfill('0') << std::hex << instruction.getValue() << "\n\t";
+		// std::cout << "executing " << std::setw(4) << std::setfill('0') << std::hex << std::uppercase << instruction.getValue() << "\n\t";
 		switch (opcode) {
 			case 0x0000: // 0NNN
-				std::cout << "0NNN with NNN = " << instruction.getNNN() << "\n";
 				// Calls machine code routine (RCA 1802 for COSMAC VIP) at address NNN. Not necessary for most ROMs.
 				// TODO: log that this opcode is purposely not implemented
 				break;
 			case 0x00E0: // 00E0
-				std::cout << "00E0\n";
-				// TODO: implementation
+				// Clears the screen.
+				// TODO: Remove comment!!! chip8.mDisplayMemory.reset();
 				break;
 			case 0x00EE: // 00EE
-				std::cout << "00EE\n";
 				// Returns from a subroutine.
 				chip8.mPC = chip8.stackPop();
 				break;
 			case 0x1000: // 1NNN
-				std::cout << "1NNN with NNN = " << instruction.getNNN() << "\n";
 				// Jumps to address NNN.
 				chip8.mPC = instruction.getNNN();
 				break;
 			case 0x2000: // 2NNN
-				std::cout << "2NNN with NNN = " << instruction.getNNN() << "\n";
 				// Calls subroutine at NNN.
 				chip8.stackPush(chip8.getProgramCounter());
 				chip8.mPC = instruction.getNNN();
 				break;
 			case 0x3000: // 3XNN
-				std::cout << "3XNN with X = " << +instruction.getX() << " and NN = " << +instruction.getNN() << "\n";
 				// Skips the next instruction if VX equals NN. (Usually the next instruction is a jump to skip a code block)
 				if (chip8.getRegister(instruction.getX()) == instruction.getNN())
 					chip8.mPC += 0x2;
 				break;
 			case 0x4000: // 4XNN
-				std::cout << "4XNN with X = " << +instruction.getX() << " and NN = " << +instruction.getNN() << "\n";
 				// Skips the next instruction if VX doesn't equal NN. (Usually the next instruction is a jump to skip a code block)
 				if (chip8.getRegister(instruction.getX()) != instruction.getNN())
 					chip8.mPC += 0x2;
 				break;
 			case 0x5000: // 5XY0
-				std::cout << "5XY0 with X = " << +instruction.getX() << " and Y = " << +instruction.getY() << "\n";
 				// Skips the next instruction if VX equals VY. (Usually the next instruction is a jump to skip a code block)
 				if (chip8.getRegister(instruction.getX()) == chip8.getRegister(instruction.getY()))
 					chip8.mPC += 0x2;
 				break;
 			case 0x6000: // 6XNN
-				std::cout << "6XNN with X = " << +instruction.getX() << " and NN = " << +instruction.getNN() << "\n";
 				// Sets VX to NN.
 				chip8.setRegister(instruction.getX(), instruction.getNN());
 				break;
 			case 0x7000: // 7XNN
-				std::cout << "7XNN with X = " << +instruction.getX() << " and NN = " << +instruction.getNN() << "\n";
 				// Adds NN to VX. (Carry flag is not changed)
 				chip8.setRegister(instruction.getX(), chip8.getRegister(instruction.getX()) + instruction.getNN());
 				break;
 			case 0x8000: // 8XY0
-				std::cout << "8XY0 with X = " << +instruction.getX() << " and Y = " << +instruction.getY() << "\n";
 				// Sets VX to the value of VY.
 				chip8.setRegister(instruction.getX(), chip8.getRegister(instruction.getY()));
 				break;
 			case 0x8001: // 8XY1
-				std::cout << "8XY1 with X = " << +instruction.getX() << " and Y = " << +instruction.getY() << "\n";
 				// Sets VX to VX or VY. (Bitwise OR operation)
 				chip8.setRegister(instruction.getX(), chip8.getRegister(instruction.getX()) | chip8.getRegister(instruction.getY()));
 				break;
 			case 0x8002: // 8XY2
-				std::cout << "8XY2 with X = " << +instruction.getX() << " and Y = " << +instruction.getY() << "\n";
 				// Sets VX to VX and VY. (Bitwise AND operation)
 				chip8.setRegister(instruction.getX(), chip8.getRegister(instruction.getX()) & chip8.getRegister(instruction.getY()));
 				break;
 			case 0x8003: // 8XY3
-				std::cout << "8XY3 with X = " << +instruction.getX() << " and Y = " << +instruction.getY() << "\n";
 				// Sets VX to VX xor VY.
 				chip8.setRegister(instruction.getX(), chip8.getRegister(instruction.getX()) ^ chip8.getRegister(instruction.getY()));
 				break;
 			case 0x8004: // 8XY4
-				std::cout << "8XY4 with X = " << +instruction.getX() << " and Y = " << +instruction.getY() << "\n";
 				// Adds VY to VX. VF is set to 1 when there's a carry, and to 0 when there isn't.
 				if (static_cast<uint16_t>(chip8.getRegister(instruction.getX())) + static_cast<uint16_t>(chip8.getRegister(instruction.getY())) > 0xFF)
 					chip8.setRegister(0xF, 0x1);
@@ -102,7 +88,6 @@ namespace Chip8 {
 				chip8.setRegister(instruction.getX(), chip8.getRegister(instruction.getX()) + chip8.getRegister(instruction.getY()));
 				break;
 			case 0x8005: // 8XY5
-				std::cout << "8XY5 with X = " << +instruction.getX() << " and Y = " << +instruction.getY() << "\n";
 				// VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
 				if (static_cast<uint16_t>(chip8.getRegister(instruction.getX())) > static_cast<uint16_t>(chip8.getRegister(instruction.getY())))
 					chip8.setRegister(0xF, 0x1); // no borrow
@@ -111,7 +96,6 @@ namespace Chip8 {
 				chip8.setRegister(instruction.getX(), chip8.getRegister(instruction.getX()) - chip8.getRegister(instruction.getY()));
 				break;
 			case 0x8006: // 8XY6
-				std::cout << "8XY6 with X = " << +instruction.getX() << " and Y = " << +instruction.getY() << "\n";
 				// Stores the least significant bit of VX in VF and then shifts VX to the right by 1.
 				//
 				// Additional information:
@@ -130,7 +114,6 @@ namespace Chip8 {
 				}
 				break;
 			case 0x8007: // 8XY7
-				std::cout << "8XY7 with X = " << +instruction.getX() << " and Y = " << +instruction.getY() << "\n";
 				// Sets VX to VY minus VX. VF is set to 0 when there's a borrow, and 1 when there isn't.
 				if (chip8.getRegister(instruction.getY()) > chip8.getRegister(instruction.getX()))
 					chip8.setRegister(0xF, 0x1); // no borrow
@@ -139,7 +122,6 @@ namespace Chip8 {
 				chip8.setRegister(instruction.getX(), chip8.getRegister(instruction.getY()) - chip8.getRegister(instruction.getX()));
 				break;
 			case 0x800E: // 8XYE
-				std::cout << "8XYE with X = " << +instruction.getX() << " and Y = " << +instruction.getY() << "\n";
 				// 	Stores the most significant bit of VX in VF and then shifts VX to the left by 1.
 				//
 				// For additional information see: 8XY6
@@ -161,59 +143,47 @@ namespace Chip8 {
 				}
 				break;
 			case 0x9000: // 9XY0
-				std::cout << "9XY0 with X = " << +instruction.getX() << " and Y = " << +instruction.getY() << "\n";
 				// Skips the next instruction if VX doesn't equal VY. (Usually the next instruction is a jump to skip a code block)
 				if (chip8.getRegister(instruction.getX()) != chip8.getRegister(instruction.getY()))
 					chip8.mPC += 0x2;
 				break;
 			case 0xA000: // ANNN
-				std::cout << "ANNN with NNN = " << +instruction.getNNN() << "\n";
 				// Sets I to the address NNN.
 				chip8.mI = instruction.getNNN();
 				break;
 			case 0xB000: // BNNN
-				std::cout << "BNNN with NNN = " << +instruction.getNNN() << "\n";
 				// Jumps to the address NNN plus V0.
 				chip8.mPC = chip8.getRegister(0x0) + instruction.getNNN();
 				break;
 			case 0xC000: // CXNN
-				std::cout << "CXNN with X = " << +instruction.getX() << " and NN = " << +instruction.getNN() << "\n";
 				// Sets VX to the result of a bitwise and operation on a random number (Typically: 0 to 255) and NN.
 				chip8.setRegister(instruction.getX(), generateRandomNumber() & instruction.getNN());
 				break;
 			case 0xD000: // DXYN
-				std::cout << "DXYN with X = " << +instruction.getX() << " and Y = " << +instruction.getY() << " and N = " << instruction.getN() << "\n";
 				// TODO: implementation
 				break;
 			case 0xE09E: // EX9E
-				std::cout << "EX9E with X = " << +instruction.getX() << "\n";
 				// TODO: implementation
 				break;
 			case 0xE0A1: // EXA1
-				std::cout << "EXA1 with X = " << +instruction.getX() << "\n";
 				// TODO: implementation
 				break;
 			case 0xF007: // FX07
-				std::cout << "FX07 with X = " << +instruction.getX() << "\n";
 				// Sets VX to the value of the delay timer.
 				chip8.setRegister(instruction.getX(), chip8.mDelayTimer);
 				break;
 			case 0xF00A: // FX0A
-				std::cout << "FX0A with X = " << +instruction.getX() << "\n";
 				// TODO: implementation
 				break;
 			case 0xF015: // FX15
-				std::cout << "FX15 with X = " << +instruction.getX() << "\n";
 				// 	Sets the delay timer to VX.
 				chip8.mDelayTimer = chip8.getRegister(instruction.getX());
 				break;
 			case 0xF018: // FX18
-				std::cout << "FX18 with X = " << +instruction.getX() << "\n";
 				// Sets the sound timer to VX.
 				chip8.mSoundTimer = chip8.getRegister(instruction.getX());
 				break;
 			case 0xF01E: // FX1E
-				std::cout << "FX1E with X = " << +instruction.getX() << "\n";
 				// Adds VX to I. VF is not affected.
 				//
 				// Additional information:
@@ -226,11 +196,9 @@ namespace Chip8 {
 				chip8.mI += chip8.getRegister(instruction.getX());
 				break;
 			case 0xF029: // FX29
-				std::cout << "FX29 with X = " << +instruction.getX() << "\n";
 				// TODO: implementation
 				break;
 			case 0xF033: // FX33
-				std::cout << "FX33 with X = " << +instruction.getX() << "\n";
 				// Stores the binary-coded decimal representation of VX, with the most significant of three
 				// digits at the address in I, the middle digit at I plus 1, and the least significant digit
 				// at I plus 2. (In other words, take the decimal representation of VX, place the hundreds
@@ -241,7 +209,6 @@ namespace Chip8 {
 				chip8.getMemory().write(chip8.getAddressPointer() + 0x2, chip8.getRegister(instruction.getX()) % 10);
 				break;
 			case 0xF055: // FX55
-				std::cout << "FX55 with X = " << +instruction.getX() << "\n";
 				// Stores V0 to VX (including VX) in memory starting at address I. The offset from I is
 				// increased by 1 for each value written, but I itself is left unmodified.
 				//
@@ -262,7 +229,6 @@ namespace Chip8 {
 				}
 				break;
 			case 0xF065: // FX65
-				std::cout << "FX65 with X = " << +instruction.getX() << "\n";
 				// Fills V0 to VX (including VX) with values from memory starting at address I. The
 				// offset from I is increased by 1 for each value written, but I itself is left unmodified.
 				//

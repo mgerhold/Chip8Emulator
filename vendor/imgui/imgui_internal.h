@@ -687,6 +687,11 @@ enum ImGuiLayoutType_
     ImGuiLayoutType_Vertical = 1
 };
 
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26812 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
 enum ImGuiLogType
 {
     ImGuiLogType_None = 0,
@@ -695,6 +700,9 @@ enum ImGuiLogType
     ImGuiLogType_Buffer,
     ImGuiLogType_Clipboard
 };
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
 // X/Y enums are fixed to 0/1 so they may be used to index ImVec2
 enum ImGuiAxis
@@ -710,6 +718,11 @@ enum ImGuiPlotType
     ImGuiPlotType_Histogram
 };
 
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26812 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
 enum ImGuiInputSource
 {
     ImGuiInputSource_None = 0,
@@ -719,8 +732,16 @@ enum ImGuiInputSource
     ImGuiInputSource_NavGamepad,    // "
     ImGuiInputSource_COUNT
 };
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
 // FIXME-NAV: Clarify/expose various repeat delay/rate
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26812 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
 enum ImGuiInputReadMode
 {
     ImGuiInputReadMode_Down,
@@ -730,6 +751,9 @@ enum ImGuiInputReadMode
     ImGuiInputReadMode_RepeatSlow,
     ImGuiInputReadMode_RepeatFast
 };
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
 enum ImGuiNavHighlightFlags_
 {
@@ -760,19 +784,35 @@ enum ImGuiNavMoveFlags_
     ImGuiNavMoveFlags_ScrollToEdge          = 1 << 6
 };
 
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26812 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
 enum ImGuiNavForward
 {
     ImGuiNavForward_None,
     ImGuiNavForward_ForwardQueued,
     ImGuiNavForward_ForwardActive
 };
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26812 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
 enum ImGuiNavLayer
 {
     ImGuiNavLayer_Main  = 0,    // Main scrolling layer
     ImGuiNavLayer_Menu  = 1,    // Menu layer (access with Alt/ImGuiNavInput_Menu)
     ImGuiNavLayer_COUNT
 };
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
 enum ImGuiPopupPositionPolicy
 {
@@ -804,7 +844,15 @@ enum ImGuiDataTypePrivate_
 // Stacked color modifier, backup of modified data so we can restore it
 struct ImGuiColorMod
 {
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26495 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     ImGuiCol    Col;
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
     ImVec4      BackupValue;
 };
 
@@ -1358,7 +1406,15 @@ struct ImGuiContext
         ActiveIdUsingKeyInputMask = 0x00;
         ActiveIdClickOffset = ImVec2(-1, -1);
         ActiveIdWindow = NULL;
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26812 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
         ActiveIdSource = ImGuiInputSource_None;
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
         ActiveIdMouseButton = 0;
         ActiveIdPreviousFrame = 0;
         ActiveIdPreviousFrameIsAlive = false;
@@ -1374,7 +1430,15 @@ struct ImGuiContext
         NavInputSource = ImGuiInputSource_None;
         NavScoringRect = ImRect();
         NavScoringCount = 0;
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26812 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
         NavLayer = ImGuiNavLayer_Main;
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
         NavIdTabCounter = INT_MAX;
         NavIdIsAlive = false;
         NavMousePosDirty = false;

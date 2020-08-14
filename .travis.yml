@@ -30,7 +30,8 @@ before_install:
     - ./vcpkg install glfw3
     - ./vcpkg install glad
     - ./vcpkg install glm
-    - ./vcpkg install gtest
+    - ./vcpkg install nativefiledialog
+    - ./vcpkg install gtest    
     - cd ..
 script:
   - mkdir build

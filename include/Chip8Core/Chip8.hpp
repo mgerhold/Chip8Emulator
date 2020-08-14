@@ -9,16 +9,20 @@
 #include <cstdint>
 #include <cstddef>
 #include <vector>
+#include <bitset>
 
 namespace Chip8 {
 
 	class Chip8 {
 	public:
 		constexpr static uint16_t ProgramOffset = 0x0200; // this is where execution starts
+		constexpr static size_t DisplayWidth = 64u;
+		constexpr static size_t DisplayHeight = 32u;
 		using MemoryUnderlyingType = uint8_t;
 
 	public:
 		Chip8() noexcept;
+		void reset(bool alsoResetMemory = true) noexcept;
 		bool loadROM(const std::string& filename);
 		bool step();
 		Chip8Memory<MemoryUnderlyingType>& getMemory() noexcept;
@@ -32,6 +36,9 @@ namespace Chip8 {
 		uint8_t getDelayTimer() const noexcept;
 		void stackPush(uint16_t returnAddress);
 		uint16_t stackPop() noexcept;
+		Instruction getNextInstruction() const;
+		void setPixel(size_t x, size_t y, bool isSet);
+		bool getPixel(size_t x, size_t y) const;
 
 	private:
 		std::array<uint8_t, 16> mV; ///< registers V0 to VF
@@ -42,6 +49,7 @@ namespace Chip8 {
 		uint8_t mSoundTimer;
 		Chip8Memory<uint8_t> mMemory;
 		CompatibilityMode mCompatibilityMode;
+		std::bitset<DisplayWidth * DisplayHeight> mDisplayMemory;
 
 		friend class OpcodeHandler;
 	};

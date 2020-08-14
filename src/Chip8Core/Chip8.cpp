@@ -23,6 +23,18 @@ namespace Chip8 {
         , mCompatibilityMode(CompatibilityMode::SuperChip)
     {}
 
+    void Chip8::reset(bool alsoResetMemory) noexcept {
+        if (alsoResetMemory)
+            mMemory.clear();
+        for (uint8_t i = 0; i <= 0xF; ++i)
+            setRegister(i, 0x0);
+        mPC = ProgramOffset;
+        mI = 0x0;
+        mDelayTimer = 0x0;
+        mSoundTimer = 0x0;
+        mCompatibilityMode = CompatibilityMode::SuperChip;
+    }
+
     bool Chip8::loadROM(const std::string& filename) {
         if (!fs::exists(filename)) {
             return false;
@@ -30,6 +42,7 @@ namespace Chip8 {
             std::basic_ifstream<uint8_t> file;
             file.open(filename, std::ios::in | std::ios::binary);
             if (file.good()) {
+                reset();
 #ifdef _MSC_VER
 #pragma warning(disable: 26481)
 #endif
@@ -128,6 +141,17 @@ namespace Chip8 {
         const uint16_t result = mStack.back();
         mStack.pop_back();
         return result;
+    }
+
+    Instruction Chip8::getNextInstruction() const {
+        return Instruction(mMemory.read(mPC), mMemory.read(mPC + 1));
+    }
+
+    void Chip8::setPixel(size_t x, size_t y, bool isSet) {
+        mDisplayMemory[x + DisplayWidth * y] = isSet;
+    }
+    bool Chip8::getPixel(size_t x, size_t y) const {
+        return mDisplayMemory[x + DisplayWidth * y];
     }
 }
 

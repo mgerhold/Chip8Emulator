@@ -21,7 +21,11 @@ set(Chip8Core_SRC
 
 set(Chip8Renderer_SRC
 	"include/Chip8Renderer/Chip8Renderer.hpp"
+	"include/Chip8Renderer/OpenFileDialog.hpp"
+	"include/Chip8Renderer/Clock.hpp"
 	"src/Chip8Renderer/Chip8Renderer.cpp"
+	"src/Chip8Renderer/OpenFileDialog.cpp"
+	"src/Chip8Renderer/Clock.cpp"
 )
 
 set(ImGui_SRC
@@ -69,15 +73,15 @@ target_compile_features(Chip8Core PUBLIC cxx_std_17)
 target_compile_features(Chip8Renderer PUBLIC cxx_std_17)
 target_compile_features(Chip8Emulator PUBLIC cxx_std_17)
 # Enable Code Analysis
-set_target_properties(Chip8Core PROPERTIES VS_GLOBAL_EnableCppCoreCheck "true")
-set_target_properties(Chip8Core PROPERTIES VS_GLOBAL_CodeAnalysisRuleSet "CppCoreCheckRules.ruleset")
-set_target_properties(Chip8Core PROPERTIES VS_GLOBAL_RunCodeAnalysis "true")
-set_target_properties(Chip8Renderer PROPERTIES VS_GLOBAL_EnableCppCoreCheck "true")
-set_target_properties(Chip8Renderer PROPERTIES VS_GLOBAL_CodeAnalysisRuleSet "CppCoreCheckRules.ruleset")
-set_target_properties(Chip8Renderer PROPERTIES VS_GLOBAL_RunCodeAnalysis "true")
-set_target_properties(Chip8Emulator PROPERTIES VS_GLOBAL_EnableCppCoreCheck "true")
-set_target_properties(Chip8Emulator PROPERTIES VS_GLOBAL_CodeAnalysisRuleSet "CppCoreCheckRules.ruleset")
-set_target_properties(Chip8Emulator PROPERTIES VS_GLOBAL_RunCodeAnalysis "true")
+#set_target_properties(Chip8Core PROPERTIES VS_GLOBAL_EnableCppCoreCheck "true")
+#set_target_properties(Chip8Core PROPERTIES VS_GLOBAL_CodeAnalysisRuleSet "CppCoreCheckRules.ruleset")
+#set_target_properties(Chip8Core PROPERTIES VS_GLOBAL_RunCodeAnalysis "true")
+#set_target_properties(Chip8Renderer PROPERTIES VS_GLOBAL_EnableCppCoreCheck "true")
+#set_target_properties(Chip8Renderer PROPERTIES VS_GLOBAL_CodeAnalysisRuleSet "CppCoreCheckRules.ruleset")
+#set_target_properties(Chip8Renderer PROPERTIES VS_GLOBAL_RunCodeAnalysis "true")
+#set_target_properties(Chip8Emulator PROPERTIES VS_GLOBAL_EnableCppCoreCheck "true")
+#set_target_properties(Chip8Emulator PROPERTIES VS_GLOBAL_CodeAnalysisRuleSet "CppCoreCheckRules.ruleset")
+#set_target_properties(Chip8Emulator PROPERTIES VS_GLOBAL_RunCodeAnalysis "true")
 
 # include directories
 target_include_directories(Chip8Core PUBLIC
@@ -107,6 +111,7 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(GTest CONFIG REQUIRED)
+find_package(unofficial-nativefiledialog CONFIG REQUIRED)
 
 # link libraries
 target_link_libraries(Chip8Emulator PRIVATE
@@ -117,6 +122,7 @@ target_link_libraries(Chip8Renderer PRIVATE
 	glfw
 	glad::glad
 	glm ImGui
+	unofficial::nativefiledialog::nfd
 )
 target_link_libraries(ImGui PRIVATE
 	glfw

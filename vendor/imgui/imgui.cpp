@@ -2255,7 +2255,15 @@ bool ImGuiListClipper::Step()
 ImGuiStyle& ImGui::GetStyle()
 {
     IM_ASSERT(GImGui != NULL && "No current context. Did you call ImGui::CreateContext() and ImGui::SetCurrentContext() ?");
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6011 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     return GImGui->Style;
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 }
 
 ImU32 ImGui::GetColorU32(ImGuiCol idx, float alpha_mul)
@@ -3244,7 +3252,15 @@ void ImGui::DestroyContext(ImGuiContext* ctx)
 ImGuiIO& ImGui::GetIO()
 {
     IM_ASSERT(GImGui != NULL && "No current context. Did you call ImGui::CreateContext() and ImGui::SetCurrentContext() ?");
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6011 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     return GImGui->IO;
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 }
 
 // Same value as passed to the old io.RenderDrawListsFn function. Valid after Render() and until the next call to NewFrame()
@@ -3315,11 +3331,19 @@ void ImGui::UpdateMouseMovingWindowNewFrame()
         if (g.IO.MouseDown[0] && IsMousePosValid(&g.IO.MousePos))
         {
             ImVec2 pos = g.IO.MousePos - g.ActiveIdClickOffset;
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 28182 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
             if (moving_window->Pos.x != pos.x || moving_window->Pos.y != pos.y)
             {
                 MarkIniSettingsDirty(moving_window);
                 SetWindowPos(moving_window, pos, ImGuiCond_Always);
             }
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
             FocusWindow(g.MovingWindow);
         }
         else
@@ -3433,7 +3457,15 @@ static void ImGui::UpdateMouseInputs()
                 ImVec2 delta_from_click_pos = IsMousePosValid(&g.IO.MousePos) ? (g.IO.MousePos - g.IO.MouseClickedPos[i]) : ImVec2(0.0f, 0.0f);
                 if (ImLengthSqr(delta_from_click_pos) < g.IO.MouseDoubleClickMaxDist * g.IO.MouseDoubleClickMaxDist)
                     g.IO.MouseDoubleClicked[i] = true;
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26451 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
                 g.IO.MouseClickedTime[i] = -g.IO.MouseDoubleClickTime * 2.0f; // Mark as "old enough" so the third click isn't turned into a double-click
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
             }
             else
             {
@@ -3654,7 +3686,15 @@ ImGuiKeyModFlags ImGui::GetMergedKeyModFlags()
 void ImGui::NewFrame()
 {
     IM_ASSERT(GImGui != NULL && "No current context. Did you call ImGui::CreateContext() and ImGui::SetCurrentContext() ?");
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6011 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     ImGuiContext& g = *GImGui;
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
 #ifdef IMGUI_ENABLE_TEST_ENGINE
     ImGuiTestEngineHook_PreNewFrame(&g);
@@ -3852,7 +3892,15 @@ void ImGui::UpdateDebugToolItemPicker()
         ImGui::BeginTooltip();
         ImGui::Text("HoveredId: 0x%08X", hovered_id);
         ImGui::Text("Press ESC to abort picking.");
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26812 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
         ImGui::TextColored(GetStyleColorVec4(hovered_id ? ImGuiCol_Text : ImGuiCol_TextDisabled), "Click to break in debugger!");
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
         ImGui::EndTooltip();
     }
 }
@@ -4330,7 +4378,15 @@ int ImGui::GetKeyIndex(ImGuiKey imgui_key)
 {
     IM_ASSERT(imgui_key >= 0 && imgui_key < ImGuiKey_COUNT);
     ImGuiContext& g = *GImGui;
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6385 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     return g.IO.KeyMap[imgui_key];
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 }
 
 // Note that dear imgui doesn't know the semantic of each entry of io.KeysDown[]!
@@ -4341,7 +4397,15 @@ bool ImGui::IsKeyDown(int user_key_index)
         return false;
     ImGuiContext& g = *GImGui;
     IM_ASSERT(user_key_index >= 0 && user_key_index < IM_ARRAYSIZE(g.IO.KeysDown));
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6385 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     return g.IO.KeysDown[user_key_index];
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 }
 
 // t0 = previous time (e.g.: g.Time - g.IO.DeltaTime)
@@ -4368,7 +4432,15 @@ int ImGui::GetKeyPressedAmount(int key_index, float repeat_delay, float repeat_r
     if (key_index < 0)
         return 0;
     IM_ASSERT(key_index >= 0 && key_index < IM_ARRAYSIZE(g.IO.KeysDown));
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6385 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     const float t = g.IO.KeysDownDuration[key_index];
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
     return CalcTypematicRepeatAmount(t - g.IO.DeltaTime, t, repeat_delay, repeat_rate);
 }
 
@@ -4378,7 +4450,15 @@ bool ImGui::IsKeyPressed(int user_key_index, bool repeat)
     if (user_key_index < 0)
         return false;
     IM_ASSERT(user_key_index >= 0 && user_key_index < IM_ARRAYSIZE(g.IO.KeysDown));
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6385 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     const float t = g.IO.KeysDownDuration[user_key_index];
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
     if (t == 0.0f)
         return true;
     if (repeat && t > g.IO.KeyRepeatDelay)
@@ -4391,21 +4471,45 @@ bool ImGui::IsKeyReleased(int user_key_index)
     ImGuiContext& g = *GImGui;
     if (user_key_index < 0) return false;
     IM_ASSERT(user_key_index >= 0 && user_key_index < IM_ARRAYSIZE(g.IO.KeysDown));
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6385 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     return g.IO.KeysDownDurationPrev[user_key_index] >= 0.0f && !g.IO.KeysDown[user_key_index];
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 }
 
 bool ImGui::IsMouseDown(ImGuiMouseButton button)
 {
     ImGuiContext& g = *GImGui;
     IM_ASSERT(button >= 0 && button < IM_ARRAYSIZE(g.IO.MouseDown));
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6385 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     return g.IO.MouseDown[button];
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 }
 
 bool ImGui::IsMouseClicked(ImGuiMouseButton button, bool repeat)
 {
     ImGuiContext& g = *GImGui;
     IM_ASSERT(button >= 0 && button < IM_ARRAYSIZE(g.IO.MouseDown));
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6385 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     const float t = g.IO.MouseDownDuration[button];
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
     if (t == 0.0f)
         return true;
 
@@ -4423,14 +4527,30 @@ bool ImGui::IsMouseReleased(ImGuiMouseButton button)
 {
     ImGuiContext& g = *GImGui;
     IM_ASSERT(button >= 0 && button < IM_ARRAYSIZE(g.IO.MouseDown));
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6385 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     return g.IO.MouseReleased[button];
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 }
 
 bool ImGui::IsMouseDoubleClicked(ImGuiMouseButton button)
 {
     ImGuiContext& g = *GImGui;
     IM_ASSERT(button >= 0 && button < IM_ARRAYSIZE(g.IO.MouseDown));
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6385 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     return g.IO.MouseDoubleClicked[button];
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 }
 
 // [Internal] This doesn't test if the button is pressed
@@ -4440,15 +4560,31 @@ bool ImGui::IsMouseDragPastThreshold(ImGuiMouseButton button, float lock_thresho
     IM_ASSERT(button >= 0 && button < IM_ARRAYSIZE(g.IO.MouseDown));
     if (lock_threshold < 0.0f)
         lock_threshold = g.IO.MouseDragThreshold;
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6385 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     return g.IO.MouseDragMaxDistanceSqr[button] >= lock_threshold * lock_threshold;
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 }
 
 bool ImGui::IsMouseDragging(ImGuiMouseButton button, float lock_threshold)
 {
     ImGuiContext& g = *GImGui;
     IM_ASSERT(button >= 0 && button < IM_ARRAYSIZE(g.IO.MouseDown));
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6385 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     if (!g.IO.MouseDown[button])
         return false;
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
     return IsMouseDragPastThreshold(button, lock_threshold);
 }
 
@@ -4474,7 +4610,15 @@ bool ImGui::IsMousePosValid(const ImVec2* mouse_pos)
     // Because GImGui is not dereferenced in every code path, the static analyzer assume that it may be NULL (which it doesn't for other functions).
     IM_ASSERT(GImGui != NULL);
     const float MOUSE_INVALID = -256000.0f;
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6011 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     ImVec2 p = mouse_pos ? *mouse_pos : GImGui->IO.MousePos;
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
     return p.x >= MOUSE_INVALID && p.y >= MOUSE_INVALID;
 }
 
@@ -4496,10 +4640,18 @@ ImVec2 ImGui::GetMouseDragDelta(ImGuiMouseButton button, float lock_threshold)
     IM_ASSERT(button >= 0 && button < IM_ARRAYSIZE(g.IO.MouseDown));
     if (lock_threshold < 0.0f)
         lock_threshold = g.IO.MouseDragThreshold;
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6385 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     if (g.IO.MouseDown[button] || g.IO.MouseReleased[button])
         if (g.IO.MouseDragMaxDistanceSqr[button] >= lock_threshold * lock_threshold)
             if (IsMousePosValid(&g.IO.MousePos) && IsMousePosValid(&g.IO.MouseClickedPos[button]))
                 return g.IO.MousePos - g.IO.MouseClickedPos[button];
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
     return ImVec2(0.0f, 0.0f);
 }
 
@@ -4508,7 +4660,15 @@ void ImGui::ResetMouseDragDelta(ImGuiMouseButton button)
     ImGuiContext& g = *GImGui;
     IM_ASSERT(button >= 0 && button < IM_ARRAYSIZE(g.IO.MouseDown));
     // NB: We don't need to reset g.IO.MouseDragMaxDistanceSqr
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6386 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     g.IO.MouseClickedPos[button] = g.IO.MousePos;
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 }
 
 ImGuiMouseCursor ImGui::GetMouseCursor()
@@ -5064,8 +5224,16 @@ static bool ImGui::UpdateWindowManualResize(ImGuiWindow* window, const ImVec2& s
         bool hovered, held;
         ButtonBehavior(resize_rect, window->GetID(resize_grip_n), &hovered, &held, ImGuiButtonFlags_FlattenChildren | ImGuiButtonFlags_NoNavFocus);
         //GetForegroundDrawList(window)->AddRect(resize_rect.Min, resize_rect.Max, IM_COL32(255, 255, 0, 255));
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26812 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
         if (hovered || held)
             g.MouseCursor = (resize_grip_n & 1) ? ImGuiMouseCursor_ResizeNESW : ImGuiMouseCursor_ResizeNWSE;
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
         if (held && g.IO.MouseDoubleClicked[0] && resize_grip_n == 0)
         {
@@ -5228,7 +5396,15 @@ void ImGui::RenderWindowDecorations(ImGuiWindow* window, const ImRect& title_bar
             }
             if (override_alpha)
                 bg_col = (bg_col & ~IM_COL32_A_MASK) | (IM_F32_TO_INT8_SAT(alpha) << IM_COL32_A_SHIFT);
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26812 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
             window->DrawList->AddRectFilled(window->Pos + ImVec2(0, window->TitleBarHeight()), window->Pos + window->Size, bg_col, window_rounding, (flags & ImGuiWindowFlags_NoTitleBar) ? ImDrawCornerFlags_All : ImDrawCornerFlags_Bot);
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
         }
 
         // Title bar
@@ -5366,11 +5542,19 @@ void ImGui::UpdateWindowParentAndRootLinks(ImGuiWindow* window, ImGuiWindowFlags
         window->RootWindow = parent_window->RootWindow;
     if (parent_window && !(flags & ImGuiWindowFlags_Modal) && (flags & (ImGuiWindowFlags_ChildWindow | ImGuiWindowFlags_Popup)))
         window->RootWindowForTitleBarHighlight = parent_window->RootWindowForTitleBarHighlight;
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 28182 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     while (window->RootWindowForNav->Flags & ImGuiWindowFlags_NavFlattened)
     {
         IM_ASSERT(window->RootWindowForNav->ParentWindow != NULL);
         window->RootWindowForNav = window->RootWindowForNav->ParentWindow;
     }
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 }
 
 // Push a new Dear ImGui window to add widgets to.
@@ -6049,7 +6233,15 @@ void ImGui::BringWindowToFocusFront(ImGuiWindow* window)
     for (int i = g.WindowsFocusOrder.Size - 2; i >= 0; i--) // We can ignore the top-most window
         if (g.WindowsFocusOrder[i] == window)
         {
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26451 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
             memmove(&g.WindowsFocusOrder[i], &g.WindowsFocusOrder[i + 1], (size_t)(g.WindowsFocusOrder.Size - i - 1) * sizeof(ImGuiWindow*));
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
             g.WindowsFocusOrder[g.WindowsFocusOrder.Size - 1] = window;
             break;
         }
@@ -6064,7 +6256,15 @@ void ImGui::BringWindowToDisplayFront(ImGuiWindow* window)
     for (int i = g.Windows.Size - 2; i >= 0; i--) // We can ignore the top-most window
         if (g.Windows[i] == window)
         {
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26451 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
             memmove(&g.Windows[i], &g.Windows[i + 1], (size_t)(g.Windows.Size - i - 1) * sizeof(ImGuiWindow*));
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
             g.Windows[g.Windows.Size - 1] = window;
             break;
         }
@@ -6120,8 +6320,16 @@ void ImGui::FocusWindow(ImGuiWindow* window)
 
     // Bring to front
     BringWindowToFocusFront(focus_front_window);
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 28182 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     if (((window->Flags | display_front_window->Flags) & ImGuiWindowFlags_NoBringToFrontOnFocus) == 0)
         BringWindowToDisplayFront(display_front_window);
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 }
 
 void ImGui::FocusTopMostWindowUnderOne(ImGuiWindow* under_this_window, ImGuiWindow* ignore_window)
@@ -6154,9 +6362,25 @@ void ImGui::SetCurrentFont(ImFont* font)
 {
     ImGuiContext& g = *GImGui;
     IM_ASSERT(font && font->IsLoaded());    // Font Atlas not created. Did you call io.Fonts->GetTexDataAsRGBA32 / GetTexDataAsAlpha8 ?
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6011 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     IM_ASSERT(font->Scale > 0.0f);
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
     g.Font = font;
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 28182 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     g.FontBaseSize = ImMax(1.0f, g.IO.FontGlobalScale * g.Font->FontSize * g.Font->Scale);
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
     g.FontSize = g.CurrentWindow ? g.CurrentWindow->CalcFontSize() : 0.0f;
 
     ImFontAtlas* atlas = g.Font->ContainerAtlas;
@@ -6301,7 +6525,15 @@ bool ImGui::IsWindowFocused(ImGuiFocusedFlags flags)
     switch (flags & (ImGuiFocusedFlags_RootWindow | ImGuiFocusedFlags_ChildWindows))
     {
     case ImGuiFocusedFlags_RootWindow | ImGuiFocusedFlags_ChildWindows:
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6011 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
         return g.NavWindow && g.NavWindow->RootWindow == g.CurrentWindow->RootWindow;
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
     case ImGuiFocusedFlags_RootWindow:
         return g.NavWindow == g.CurrentWindow->RootWindow;
     case ImGuiFocusedFlags_ChildWindows:
@@ -7873,7 +8105,15 @@ bool ImGui::BeginPopupContextVoid(const char* str_id, ImGuiPopupFlags popup_flag
 
 // r_avoid = the rectangle to avoid (e.g. for tooltip it is a rectangle around the mouse cursor which we want to avoid. for popups it's a small point around the cursor.)
 // r_outer = the visible area rectangle, minus safe area padding. If our popup size won't fit because of safe area padding we ignore it.
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26812 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
 ImVec2 ImGui::FindBestWindowPosForPopupEx(const ImVec2& ref_pos, const ImVec2& size, ImGuiDir* last_dir, const ImRect& r_outer, const ImRect& r_avoid, ImGuiPopupPositionPolicy policy)
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 {
     ImVec2 base_pos_clamped = ImClamp(ref_pos, r_outer.Min, r_outer.Max - size);
     //GetForegroundDrawList()->AddRect(r_avoid.Min, r_avoid.Max, IM_COL32(255,0,0,255));
@@ -7991,7 +8231,15 @@ void ImGui::SetNavID(ImGuiID id, int nav_layer, ImGuiID focus_scope_id)
     IM_ASSERT(nav_layer == 0 || nav_layer == 1);
     g.NavId = id;
     g.NavFocusScopeId = focus_scope_id;
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6011 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     g.NavWindow->NavLastIds[nav_layer] = id;
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 }
 
 void ImGui::SetNavIDWithRectRel(ImGuiID id, int nav_layer, ImGuiID focus_scope_id, const ImRect& rect_rel)
@@ -8031,7 +8279,15 @@ void ImGui::SetFocusID(ImGuiID id, ImGuiWindow* window)
 ImGuiDir ImGetDirQuadrantFromDelta(float dx, float dy)
 {
     if (ImFabs(dx) > ImFabs(dy))
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26812 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
         return (dx > 0.0f) ? ImGuiDir_Right : ImGuiDir_Left;
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
     return (dy > 0.0f) ? ImGuiDir_Down : ImGuiDir_Up;
 }
 
@@ -8746,7 +9002,15 @@ static void ImGui::NavUpdateMoveResult()
         }
         else
         {
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6011 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
             ImRect rect_abs = ImRect(result->RectRel.Min + result->Window->Pos, result->RectRel.Max + result->Window->Pos);
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
             delta_scroll = ScrollToBringRectIntoView(result->Window, rect_abs);
         }
 
@@ -8924,7 +9188,15 @@ static void NavUpdateWindowingHighlightWindow(int focus_change_dir)
 {
     ImGuiContext& g = *GImGui;
     IM_ASSERT(g.NavWindowingTarget);
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 6011 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
     if (g.NavWindowingTarget->Flags & ImGuiWindowFlags_Modal)
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
         return;
 
     const int i_current = ImGui::FindWindowFocusIndex(g.NavWindowingTarget);
@@ -10312,7 +10584,15 @@ void ImGui::ShowMetricsWindow(bool* p_open)
         {
             if (!ImGui::TreeNode((void*)(uintptr_t)columns->ID, "Columns Id: 0x%08X, Count: %d, Flags: 0x%04X", columns->ID, columns->Count, columns->Flags))
                 return;
+#ifdef _MSC_VER
+#pragma warning( push , 0 )
+#pragma warning( disable : 26451 )
+#pragma warning( disable : ALL_CODE_ANALYSIS_WARNINGS )
+#endif
             ImGui::BulletText("Width: %.1f (MinX: %.1f, MaxX: %.1f)", columns->OffMaxX - columns->OffMinX, columns->OffMinX, columns->OffMaxX);
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
             for (int column_n = 0; column_n < columns->Columns.Size; column_n++)
                 ImGui::BulletText("Column %02d: OffsetNorm %.3f (= %.1f px)", column_n, columns->Columns[column_n].OffsetNorm, GetColumnOffsetFromNorm(columns, columns->Columns[column_n].OffsetNorm));
             ImGui::TreePop();
