@@ -454,6 +454,50 @@ namespace {
 		ASSERT_EQ(chip8.getRegister(0x4), 0xFF);
 		ASSERT_EQ(chip8.getAddressPointer(), 0x123); // address pointer unchanged
 	}
+
+	TEST_F(OpcodeTest, SkipNextInstructionIfKeyIsPressed_Skip) { // EX9E
+		chip8.setRegister(0xA, 0x1);
+		writeInstruction(0xEA9E); // skip next instruction if the key in VA (0x1) is pressed
+		chip8.triggerKeyDown(0x1); // simulate key press
+		chip8.step();
+		ASSERT_EQ(chip8.getProgramCounter(), chip8.ProgramOffset + 0x4);
+	}
+
+	TEST_F(OpcodeTest, SkipNextInstructionIfKeyIsPressed_NoSkip) { // EX9E
+		chip8.setRegister(0xA, 0x2);
+		writeInstruction(0xEA9E); // skip next instruction if the key in VA (0x2) is pressed
+		chip8.triggerKeyDown(0x1); // simulate key press (wrong key though)
+		chip8.step();
+		ASSERT_EQ(chip8.getProgramCounter(), chip8.ProgramOffset + 0x2);
+	}
+
+	TEST_F(OpcodeTest, SkipNextInstructionIfKeyIsNotPressed_Skip) { // EXA1
+		chip8.setRegister(0xA, 0x1);
+		writeInstruction(0xEAA1); // skip next instruction if the key in VA (0x1) is not pressed
+		chip8.triggerKeyDown(0x2); // simulate key press (wrong key)
+		chip8.step();
+		ASSERT_EQ(chip8.getProgramCounter(), chip8.ProgramOffset + 0x4);
+	}
+
+	TEST_F(OpcodeTest, SkipNextInstructionIfKeyIsNotPressed_NoSkip) { // EXA1
+		chip8.setRegister(0xA, 0x1);
+		writeInstruction(0xEAA1); // skip next instruction if the key in VA (0x1) is not pressed
+		chip8.triggerKeyDown(0x1); // simulate key press (wrong key)
+		chip8.step();
+		ASSERT_EQ(chip8.getProgramCounter(), chip8.ProgramOffset + 0x2);
+	}
+
+	TEST_F(OpcodeTest, AwaitKeyPress) { // FX0A
+		writeInstruction(0xFA0A); // wait for keypress and store result in VA
+		writeInstruction(0x00E0); // clear scrren (dummy instruction)
+		for (int i = 0; i < 10; i++)
+			chip8.step(); // should only step once!
+		ASSERT_EQ(chip8.getProgramCounter(), chip8.ProgramOffset + 0x2);
+		chip8.triggerKeyDown(0xC);
+		ASSERT_EQ(chip8.getRegister(0xA), 0xC);
+		chip8.step();
+		ASSERT_EQ(chip8.getProgramCounter(), chip8.ProgramOffset + 0x4);
+	}
 }
 
 int main(int argc, char **argv) {

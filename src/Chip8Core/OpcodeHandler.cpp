@@ -169,12 +169,14 @@ namespace Chip8 {
 			case 0xE09E: // EX9E
 				// Skips the next instruction if the key stored in VX is pressed. (Usually the next instruction
 				// is a jump to skip a code block)
-				// TODO: implementation
+				if (chip8.isKeyPressed(chip8.getRegister(instruction.getX())))
+					chip8.mPC += 2;
 				break;
 			case 0xE0A1: // EXA1
 				// Skips the next instruction if the key stored in VX isn't pressed. (Usually the next instruction
 				// is a jump to skip a code block)
-				// TODO: implementation
+				if (!chip8.isKeyPressed(chip8.getRegister(instruction.getX())))
+					chip8.mPC += 2;
 				break;
 			case 0xF007: // FX07
 				// Sets VX to the value of the delay timer.
@@ -183,7 +185,8 @@ namespace Chip8 {
 			case 0xF00A: // FX0A
 				// A key press is awaited, and then stored in VX. (Blocking Operation. All instruction halted until
 				// next key event)
-				// TODO: implementation
+				chip8.mAwaitingKeyPress = true;
+				chip8.mKeyPressRegisterTarget = instruction.getX();
 				break;
 			case 0xF015: // FX15
 				// 	Sets the delay timer to VX.

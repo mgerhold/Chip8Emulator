@@ -1,6 +1,7 @@
 #include "Chip8Renderer/Chip8Renderer.hpp"
 
 #include <iostream>
+#include <unordered_map>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -19,6 +20,7 @@
 #pragma warning( pop )
 #endif
 #include "Chip8Renderer/OpenFileDialog.hpp"
+#include "Chip8Renderer/Input.hpp"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) noexcept;
@@ -58,6 +60,7 @@ bool Chip8Renderer::createWindow() {
 
     glfwMakeContextCurrent(mWindow);
     glfwSetFramebufferSizeCallback(mWindow, framebuffer_size_callback);
+    glfwSetKeyCallback(mWindow, Input::glfwKeyCallbackFunction);
 
     // glad
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -73,6 +76,14 @@ bool Chip8Renderer::createWindow() {
     ImGui_ImplGlfw_InitForOpenGL(mWindow, true);
     constexpr char const * glsl_version = "#version 330";
     ImGui_ImplOpenGL3_Init(glsl_version);
+
+    // connect input
+    Input::setKeyDownCallback([&](uint8_t key) -> void{
+        mChip8.triggerKeyDown(key);
+    });
+    Input::setKeyUpCallback([&](uint8_t key) -> void {
+        mChip8.triggerKeyUp(key);
+    });
 
     return true;
 }
@@ -199,6 +210,29 @@ void Chip8Renderer::renderImGui() {
 
     ImGui::Separator();
 
+    static const ImVec4 pressedColor{ 1.f, 1.f, 1.f, 1.f };
+    static const ImVec4 notPressedColor{ 0.2f, 0.2f, 0.2f, 1.f };
+
+    ImGui::Text("Input:");
+    ImGui::TextColored( Input::isKeyPressed(0x1) ? pressedColor : notPressedColor, "1");
+    ImGui::SameLine(); ImGui::TextColored(Input::isKeyPressed(0x2) ? pressedColor : notPressedColor, "2");
+    ImGui::SameLine(); ImGui::TextColored(Input::isKeyPressed(0x3) ? pressedColor : notPressedColor, "3");
+    ImGui::SameLine(); ImGui::TextColored(Input::isKeyPressed(0xC) ? pressedColor : notPressedColor, "C");
+    ImGui::TextColored(Input::isKeyPressed(0x4) ? pressedColor : notPressedColor, "4");
+    ImGui::SameLine(); ImGui::TextColored(Input::isKeyPressed(0x5) ? pressedColor : notPressedColor, "5");
+    ImGui::SameLine(); ImGui::TextColored(Input::isKeyPressed(0x6) ? pressedColor : notPressedColor, "6");
+    ImGui::SameLine(); ImGui::TextColored(Input::isKeyPressed(0xD) ? pressedColor : notPressedColor, "D");
+    ImGui::TextColored(Input::isKeyPressed(0x7) ? pressedColor : notPressedColor, "7");
+    ImGui::SameLine(); ImGui::TextColored(Input::isKeyPressed(0x8) ? pressedColor : notPressedColor, "8");
+    ImGui::SameLine(); ImGui::TextColored(Input::isKeyPressed(0x9) ? pressedColor : notPressedColor, "9");
+    ImGui::SameLine(); ImGui::TextColored(Input::isKeyPressed(0xE) ? pressedColor : notPressedColor, "E");
+    ImGui::TextColored(Input::isKeyPressed(0xA) ? pressedColor : notPressedColor, "A");
+    ImGui::SameLine(); ImGui::TextColored(Input::isKeyPressed(0x0) ? pressedColor : notPressedColor, "0");
+    ImGui::SameLine(); ImGui::TextColored(Input::isKeyPressed(0xB) ? pressedColor : notPressedColor, "B");
+    ImGui::SameLine(); ImGui::TextColored(Input::isKeyPressed(0xF) ? pressedColor : notPressedColor, "F");
+
+    ImGui::Separator();
+
     ImGui::PushItemWidth(170);
     ImGui::SliderInt("updates per second", &mUpdatesPerSecond, 10, 10'000);
     int currentCompatibilityModeIndex = (mChip8.getCompatibilityMode() == Chip8::CompatibilityMode::OriginalChip8 ? 0 : 1);
@@ -219,6 +253,7 @@ void Chip8Renderer::renderImGui() {
         }
     }
     ImGui::SameLine();
+        
 
     if (mRunning) {
         if (ImGui::Button("Pause")) {

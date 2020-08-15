@@ -20,7 +20,8 @@ namespace Chip8 {
 
     Chip8::Chip8() noexcept
         : mV({}), mI(0), mPC(ProgramOffset), mDelayTimer(0x0), mSoundTimer(0x0)
-        , mCompatibilityMode(CompatibilityMode::SuperChip)
+        , mCompatibilityMode(CompatibilityMode::SuperChip), mAwaitingKeyPress(false)
+        , mKeyPressRegisterTarget(0x0)
     {}
 
     void Chip8::reset(bool alsoResetMemory) noexcept {
@@ -68,6 +69,10 @@ namespace Chip8 {
     }
 
     bool Chip8::step() {
+        if (mAwaitingKeyPress) {
+            // waiting for keypress (blocking)
+            return true;
+        }
         // check if program counter is valid
         if (mPC < 0x1000) {
             // read next instruction and increase program counter
@@ -186,6 +191,22 @@ namespace Chip8 {
             return false;
         }
         return mDisplayMemory[x + DisplayWidth * y];
+    }
+
+    void Chip8::triggerKeyDown(uint8_t key) noexcept {
+        mPressedKeys[key] = true;
+        if (mAwaitingKeyPress) {
+            setRegister(mKeyPressRegisterTarget, key);
+            mAwaitingKeyPress = false;
+        }
+    }
+
+    void Chip8::triggerKeyUp(uint8_t key) noexcept {
+        mPressedKeys[key] = false;
+    }
+
+    bool Chip8::isKeyPressed(uint8_t key) const noexcept {
+        return mPressedKeys[key];
     }
 
     void Chip8::writeCharacterData() {

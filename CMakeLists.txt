@@ -23,9 +23,11 @@ set(Chip8Renderer_SRC
 	"include/Chip8Renderer/Chip8Renderer.hpp"
 	"include/Chip8Renderer/OpenFileDialog.hpp"
 	"include/Chip8Renderer/Clock.hpp"
+	"include/Chip8Renderer/Input.hpp"
 	"src/Chip8Renderer/Chip8Renderer.cpp"
 	"src/Chip8Renderer/OpenFileDialog.cpp"
 	"src/Chip8Renderer/Clock.cpp"
+	"src/Chip8Renderer/Input.cpp"
 )
 
 set(ImGui_SRC

@@ -41,6 +41,9 @@ namespace Chip8 {
 		Instruction getNextInstruction() const;
 		void setPixel(size_t x, size_t y, bool isSet);
 		bool getPixel(size_t x, size_t y) const;
+		void triggerKeyDown(uint8_t key) noexcept;
+		void triggerKeyUp(uint8_t key) noexcept;
+		bool isKeyPressed(uint8_t key) const noexcept;
 
 	private:
 		void writeCharacterData();
@@ -55,6 +58,9 @@ namespace Chip8 {
 		Chip8Memory<uint8_t> mMemory;
 		CompatibilityMode mCompatibilityMode;
 		std::bitset<DisplayWidth * DisplayHeight> mDisplayMemory;
+		std::bitset<0x10> mPressedKeys;
+		bool mAwaitingKeyPress;
+		uint8_t mKeyPressRegisterTarget;
 
 		friend class OpcodeHandler;
 
