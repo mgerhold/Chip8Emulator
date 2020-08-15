@@ -66,7 +66,6 @@ else()
 	target_compile_options(Chip8Core PUBLIC -Wall -Wextra -pedantic -Werror)
 	target_compile_options(Chip8Renderer PUBLIC -Wall -Wextra -pedantic -Werror)
 	target_compile_options(Chip8Emulator PUBLIC -Wall -Wextra -pedantic -Werror)
-	#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lstdc++fs")
 	target_link_libraries(Chip8Core PRIVATE stdc++fs)
 endif()
 
@@ -111,7 +110,6 @@ set_property(TARGET Chip8Emulator PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAK
 # external libraries
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
-find_package(glm CONFIG REQUIRED)
 find_package(GTest CONFIG REQUIRED)
 find_package(unofficial-nativefiledialog CONFIG REQUIRED)
 
@@ -123,7 +121,7 @@ target_link_libraries(Chip8Emulator PRIVATE
 target_link_libraries(Chip8Renderer PRIVATE
 	glfw
 	glad::glad
-	glm ImGui
+	ImGui
 	unofficial::nativefiledialog::nfd
 )
 target_link_libraries(ImGui PRIVATE

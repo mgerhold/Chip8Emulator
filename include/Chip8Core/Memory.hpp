@@ -1,3 +1,6 @@
+/** @file
+  * @brief Contains the Chip8Memory class. Is resembles the memory of the emulator.
+  */
 #pragma once
 
 #include <cstddef>
@@ -6,13 +9,42 @@
 #include <iostream>
 #include <iomanip>
 
+/**
+ * @brief This class template represents the memory for the CHIP-8.
+ * @tparam UnderlyingType The data type each memory location will be represented at (usually uint8_t).
+*/
 template <typename UnderlyingType>
 class Chip8Memory {
 public:
+	/**
+	 * @brief Writes a value.
+	 * @param address The address to write to.
+	 * @param value The value.
+	*/
 	void write(uint16_t address, UnderlyingType value);
+
+	/**
+	 * @brief Reads a value.
+	 * @param address The address to read from.
+	 * @return The value that has been read.
+	*/
 	UnderlyingType read(uint16_t address) const;
+
+	/**
+	 * @brief Fills the whole memory with zeros.
+	*/
 	void clear();
+
+	/**
+	 * @brief Returns a pointer to the underlying memory. This should usually not
+	 *        be used from outside.
+	 * @return Pointer to the data.
+	*/
 	UnderlyingType* data() noexcept;
+
+	/**
+	 * @brief Writes the content of the memory to standard output.
+	*/
 	void dump() const;
 
 private:

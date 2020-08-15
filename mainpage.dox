@@ -1,0 +1,24 @@
+/*! \mainpage A simple CHIP-8 emulator
+ *
+ * \section intro_sec Introduction
+ *
+ * This is a simple CHIP-8 emulator for Linux and Windows. It has been tested to compile with GCC (Linux) and MS Visual Studio 2019 (Windows). To find out more about the CHIP-8 please refer to the according <a href="https://en.wikipedia.org/wiki/CHIP-8">Wikipedia page</a>. You can check out the corresponding <a href="https://github.com/mgerhold/Chip8Emulator">GitHub repository</a> for a list of implemented features and screenshots. This emulator was created mainly as a learning project.
+ *
+ * \section howToBuild_sec How to Build
+ *
+ * The easiest way to build the emulator is by using CMake and Vcpkg (a package manager). You can follow these steps (both on Linux and Windows):
+ * - Download and install <a href="https://git-scm.com/downloads">git</a>
+ * - Download and install <a href="https://cmake.org/download/">CMake</a>
+ * - Download and install <a href="https://github.com/microsoft/vcpkg">Vcpkg</a>
+ * - Use Vcpkg to install the following packages:
+ *   - glfw3
+ *   - glad
+ *   - gtest
+ *   - nativefiledialog
+ *   - opengl
+ * - Make sure to set the environment variable `VCPKG_ROOT` to the directory you installed Vcpkg into.
+ * - Clone the git repository: `clone git https://github.com/mgerhold/Chip8Emulator.git`
+ * - Run the install script: `CMakeVCPKG.bat` on Windows, `CMakeVCPKH.sh` on Linux
+ *   - On Windows this creates a Visual Studio solution in the folder `build` which you can open and build.
+ *   - On Linux this creates a makefile in the folder `build`. Just enter this folder and run the `make` command to build the executable.
+ */

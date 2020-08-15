@@ -1,3 +1,7 @@
+/** @file
+  * @brief Contains a list of all opcodes of the CHIP-8.
+  */
+
 #pragma once
 
 #include <array>
@@ -75,6 +79,9 @@ namespace Chip8 {
 
 	}
 
+	/**
+	 * @brief A constexpr of all opcodes and useful "meta data" to all opcodes.
+	*/
 	inline constexpr std::array<std::tuple<const char*, uint16_t, uint16_t, uint16_t>, 35> Opcodes = {
 		// name					opcode as uint16_t				opcode mask	as uint16_t															parameter mask as uint16_t
 		std::make_tuple("00E0", getOpcode(to_array("00E0")), instructionMaskToUint16(inverseInstructionMaskFromCharArray(to_array("00E0"))), instructionMaskToUint16(instructionMaskFromCharArray(to_array("00E0")))),
