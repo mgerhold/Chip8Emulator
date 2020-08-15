@@ -147,6 +147,10 @@ namespace Chip8 {
         return mDelayTimer;
     }
 
+    uint8_t Chip8::getSoundTimer() const noexcept {
+        return mSoundTimer;
+    }
+
     void Chip8::stackPush(uint16_t returnAddress) {
         mStack.push_back(returnAddress);
     }
@@ -170,7 +174,7 @@ namespace Chip8 {
 
     void Chip8::setPixel(size_t x, size_t y, bool isSet) {
         if (x >= DisplayWidth || y >= DisplayHeight) {
-            std::cout << "Error: Invalid pixel coordinate (" << x << ", " << y << ")\n";
+            // invalid pixel coordinate
             return;
         }
         mDisplayMemory[x + DisplayWidth * y] = isSet;
@@ -178,7 +182,7 @@ namespace Chip8 {
 
     bool Chip8::getPixel(size_t x, size_t y) const {
         if (x >= DisplayWidth || y >= DisplayHeight) {
-            std::cout << "Error: Invalid pixel coordinate (" << x << ", " << y << ")\n";
+            // invalid pixel coordinate
             return false;
         }
         return mDisplayMemory[x + DisplayWidth * y];

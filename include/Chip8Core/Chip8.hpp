@@ -35,6 +35,7 @@ namespace Chip8 {
 		CompatibilityMode getCompatibilityMode() const noexcept;
 		uint16_t getAddressPointer() const noexcept;
 		uint8_t getDelayTimer() const noexcept;
+		uint8_t getSoundTimer() const noexcept;
 		void stackPush(uint16_t returnAddress);
 		uint16_t stackPop() noexcept;
 		Instruction getNextInstruction() const;

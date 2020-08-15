@@ -84,12 +84,14 @@ void Chip8Renderer::startRenderLoop() {
         processInput(mWindow);
 
         if (mStepping) {
+            mLastInstruction = mChip8.getNextInstruction();
             mChip8.step();
             mChip8.clockTimers();
             mStepping = false;
         }
 
         while (mRunning && (mUpdateClock.getElapsedTime() - mLastUpdateClockTime >= 1.f / mUpdatesPerSecond)) {
+            mLastInstruction = mChip8.getNextInstruction();
             mChip8.step();
             mLastUpdateClockTime += 1.f / mUpdatesPerSecond;
         }
@@ -105,8 +107,6 @@ void Chip8Renderer::startRenderLoop() {
             glfwSwapBuffers(mWindow);
             mLastTimerClockTime = mTimerClock.getElapsedTime();
         }
-        /*if (mStepping)
-            mChip8.clockTimers();*/
     }
 }
 
@@ -183,6 +183,8 @@ void Chip8Renderer::renderImGui() {
         ImGui::SameLine();
         ImGui::Text("V%01X: 0x%02X", i + 0x8, mChip8.getRegister(i + 0x8));
     }
+    ImGui::Text("Delay timer: %d", mChip8.getDelayTimer());
+    ImGui::Text("Sound timer: %d", mChip8.getSoundTimer());
     if (mLastInstruction.getValue() != 0x0000)
         ImGui::Text("Last instruction: 0x%04X", mLastInstruction.getValue());
     else
