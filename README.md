@@ -5,6 +5,7 @@ This is my humble CHIP-8 emulator. If you've never heard of the CHIP-8, please r
 ## Dependencies
 * [glfw](https://www.glfw.org/)
 * [glad](https://github.com/Dav1dde/glad)
+* [imgui](https://github.com/ocornut/imgui)
 * [nativefiledialog](https://github.com/mlabbe/nativefiledialog)
 * [Google Test](https://github.com/google/googletest) (for unit tests)
 ## Documentation
