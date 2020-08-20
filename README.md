@@ -9,7 +9,7 @@ This is my humble CHIP-8 emulator. If you've never heard of the CHIP-8, please r
 * [nativefiledialog](https://github.com/mlabbe/nativefiledialog)
 * [Google Test](https://github.com/google/googletest) (for unit tests)
 ## Documentation
-You can find the doxygen-generated documentation [here](https://mgerhold.github.io/Chip8Emulator/).
+You can find the [doxygen](https://www.doxygen.nl/index.html)-generated documentation [here](https://mgerhold.github.io/Chip8Emulator/).
 ## How to build?
 The easiest way to build this project is to use [CMake](https://cmake.org/) and [Vcpkg](https://github.com/microsoft/vcpkg). Please refer to the [documentation](https://mgerhold.github.io/Chip8Emulator/) for the individual steps.
 ## Platforms
