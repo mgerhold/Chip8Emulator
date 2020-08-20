@@ -1,7 +1,7 @@
 # CHIP-8 Emulator
 [![Build Status](https://travis-ci.com/mgerhold/Chip8Emulator.svg?branch=master)](https://travis-ci.com/mgerhold/Chip8Emulator)
 ## What is this?
-This is my humble CHIP-8 emulator. If you've never heard of the CHIP-8, please refer to [Wikipedia]([https://en.wikipedia.org/wiki/CHIP-8](https://en.wikipedia.org/wiki/CHIP-8)). It is written in C++ and uses OpenGL for rendering. While the sound delay timer is implemented, it is not capable of playing sound at the moment.
+This is my humble CHIP-8 emulator. If you've never heard of the CHIP-8, please refer to [Wikipedia](https://en.wikipedia.org/wiki/CHIP-8). It is written in C++ and uses OpenGL for rendering. While the sound delay timer is implemented, it is not capable of playing sound at the moment.
 ## Dependencies
 * [glfw](https://www.glfw.org/)
 * [glad](https://github.com/Dav1dde/glad)
